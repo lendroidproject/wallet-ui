@@ -27,6 +27,18 @@ const Wrapper = styled.div`
 `
 
 function Table({ headers, data = [], actions, onAction }) {
+  const addCommas = value => {
+    return (value + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,')
+  }
+
+  const setPrecision = (value, prec) => {
+    const up = parseInt(value, 10)
+    const down = (
+      '000' + parseInt(value * Math.pow(10, prec), 10).toString()
+    ).substr(-prec)
+    return addCommas(up) + '.' + down
+  }
+
   const getDisplayData = (data, header) => {
     let ret = data[header.key]
 
@@ -34,18 +46,8 @@ function Table({ headers, data = [], actions, onAction }) {
       ret = ret.split(' ')[0]
     }
 
-    if (header.precision) ret = this.setPrecision(ret, header.precision)
-    if (header.filter) ret = this[header.filter](ret)
-    if (header.suffix) {
-      ret = (
-        <div>
-          {ret} <span>{data[header.suffix] || header.suffix}</span>
-        </div>
-      )
-    } else {
-      ret = <div>{ret}</div>
-    }
-    return ret
+    if (header.precision) ret = setPrecision(ret, header.precision)
+    return <div>{ret}</div>
   }
 
   return (
@@ -74,7 +76,7 @@ function Table({ headers, data = [], actions, onAction }) {
                 ))}
                 <td>
                   {actions.map(({ label, slot }) => (
-                    <button onClick={() => onAction(slot)}>{label}</button>
+                    <button key={slot} onClick={() => onAction(slot, d)}>{label}</button>
                   ))}
                 </td>
               </tr>

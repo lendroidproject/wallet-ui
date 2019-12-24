@@ -27,7 +27,6 @@ const Wrapper = styled.div`
   }
 
   .panel {
-    padding: 0 18px;
     display: none;
     background-color: white;
     overflow: hidden;
@@ -40,13 +39,49 @@ const Wrapper = styled.div`
 
 const tokens = [
   { value: 'tokens', label: 'Tokens' },
-  { value: 'wrapped-tokens', label: 'Wrapped Tokens' },
-  { value: 'sufi-tokens', label: 'SUFI Tokens' },
-  { value: 'poolshare-tokens', label: 'Poolshare Tokens' },
+  { value: 'wrappedTokens', label: 'Wrapped Tokens' },
+  { value: 'sufiTokens', label: 'SUFI Tokens' },
+  { value: 'poolshareTokens', label: 'Poolshare Tokens' },
 ]
 
 const headers = {
   tokens: [
+    {
+      label: 'Name',
+      key: 'token',
+      style: { textAlign: 'left' },
+    },
+    {
+      label: 'Balance',
+      key: 'balance',
+      precision: 3,
+    },
+  ],
+  wrappedTokens: [
+    {
+      label: 'Name',
+      key: 'token',
+      style: { textAlign: 'left' },
+    },
+    {
+      label: 'Balance',
+      key: 'balance',
+      precision: 3,
+    },
+  ],
+  sufiTokens: [
+    {
+      label: 'Name',
+      key: 'token',
+      style: { textAlign: 'left' },
+    },
+    {
+      label: 'Balance',
+      key: 'balance',
+      precision: 3,
+    },
+  ],
+  poolshareTokens: [
     {
       label: 'Name',
       key: 'token',
@@ -71,19 +106,70 @@ const actions = {
       slot: 'wrap',
     },
   ],
+  wrappedTokens: [
+    {
+      label: 'Transfer',
+      slot: 'transfer',
+    },
+    {
+      label: 'Unwrap',
+      slot: 'unwrap',
+    },
+    {
+      label: 'Split',
+      slot: 'split',
+    },
+    {
+      label: 'Contribute',
+      slot: 'contribute',
+    },
+  ],
 }
 
-function Tokens() {
+function Tokens({ library, supportTokens }) {
   const [active, setActive] = useState('tokens')
 
   const handleAction = (value, slot, data) => {
-    console.log(value, slot, data)
+    switch (slot) {
+      case 'wrap': {
+        const { token } = data
+        const amount = prompt('Please enter your amount', 1)
+        if (amount) {
+          // library.contracts.onWrap(token, amount)
+          console.log(library.address, token, amount, library.contracts, library)
+          const {
+            contracts: { [token]: Token, CurrencyDao },
+            address,
+          } = library.contracts
+          CurrencyDao.methods.wrap(Token._address, amount).send({ from: address })
+        }
+        break
+      }
+      case 'unwrap': {
+        const { token } = data
+        const amount = prompt('Please enter your amount', 1)
+        if (amount) {
+          // library.contracts.onWrap(token, amount)
+          console.log(library.address, token, amount, library.contracts, library)
+          const {
+            contracts: { [token]: Token, CurrencyDao },
+            address,
+          } = library.contracts
+          CurrencyDao.methods
+            .unwrap(Token._address, amount)
+            .send({ from: address })
+        }
+        break
+      }
+      default:
+        console.log(value, slot, data)
+    }
   }
 
   return (
     <Wrapper>
       {tokens.map(({ value, label }) => (
-        <>
+        <div key={value}>
           <button
             className={`accordion ${active === value ? 'active' : ''}`}
             onClick={() => setActive(value)}
@@ -93,12 +179,12 @@ function Tokens() {
           <div className={`panel ${active === value ? 'active' : ''}`}>
             <Table
               headers={headers[value] || []}
-              data={[]}
+              data={supportTokens}
               actions={actions[value] || []}
               onAction={(slot, data) => handleAction(value, slot, data)}
             />
           </div>
-        </>
+        </div>
       ))}
     </Wrapper>
   )
