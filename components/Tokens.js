@@ -135,13 +135,7 @@ function Tokens({ library, supportTokens }) {
         const { token } = data
         const amount = prompt('Please enter your amount', 1)
         if (amount) {
-          // library.contracts.onWrap(token, amount)
-          console.log(library.address, token, amount, library.contracts, library)
-          const {
-            contracts: { [token]: Token, CurrencyDao },
-            address,
-          } = library.contracts
-          CurrencyDao.methods.wrap(Token._address, amount).send({ from: address })
+          console.log(library.contracts.onWrap(token, amount))
         }
         break
       }
@@ -149,15 +143,7 @@ function Tokens({ library, supportTokens }) {
         const { token } = data
         const amount = prompt('Please enter your amount', 1)
         if (amount) {
-          // library.contracts.onWrap(token, amount)
-          console.log(library.address, token, amount, library.contracts, library)
-          const {
-            contracts: { [token]: Token, CurrencyDao },
-            address,
-          } = library.contracts
-          CurrencyDao.methods
-            .unwrap(Token._address, amount)
-            .send({ from: address })
+          console.log(library.contracts.onUnwrap(token, amount))
         }
         break
       }
