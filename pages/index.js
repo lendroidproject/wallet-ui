@@ -40,33 +40,45 @@ const tabs = [
 ]
 
 const tokens = {
-  LST: '0xa72d0651c868a85e222eed05028264c86653a7f6',
-  Lend: '0xf041c1129470e92aa5483c975e60ff1ef78f69e2',
-  Borrow: '0x48c52951efbcbc7957d9166bb9efb2df47fbcb25',
-  PriceFeed: '0x9bd26b71935295c4b0ada1f0c5046f61f7432746',
-  CurrencyDao: '0xfb224550e8b54629beec81331eb226b9081236ab',
-  InterestPoolDao: '0x14c865a62d176d52640feaa98c9060a64f9ea1b3',
-  UnderwriterPoolDao: '0x6943ae6cd2bbae64d7588d93119159df6eabbba2',
-  MarketDao: '0xe0d5cbfbcb7f233856168b9ec526892bb5deb4fb',
-  ShieldPayoutDao: '0xb271b0c01fac4ca33aa77fc042f3bcbf2b762e32',
-  PoolNameRegistry: '0xe88c99cb4fa0b3fba49421f26fc61adb996a323a',
-  PositionRegistry: '0xa3ffc0d55b10daeacfa578effea5a61f765f6c0a',
-  CurrencyPool: '0xb3c340ed6ff6c71debb8eeb8990fe88a74626dac',
-  InterestPool: '0xf2ac6a4195b604ce4f4a6ac4376134dbdd00d3b0',
-  UnderwriterPool: '0x61860c478c2a908d07c147a5a5bcf7e4167a6201',
-  PriceOracle: '0xb911e70a123fbb3b0acf3389cec9c02178e9fc7d',
-  CollateralAuctionCurve: '0x4f2cc8c2a133f535c2a8973a87a1464bf7237e39',
-  ERC20: '0x1b83332c613c386f5490b56546893a37e34b3819',
-  MultiFungibleToken: '0x0c7a111876ececef2e80c8a0dfd75b1603f73f59',
-  ProtocolDao: '0xf79179ea141270a3a2ffe553b6993d0a489b461f',
+  Test1: '0x5a68545e281738f4e9a47d5f130c8f0e081127e1',
+  Test2: '0x9486de11e49cccc95f27df9c13f8707140930028',
+  Governor: '0x2827e545cf1e08769047e51f8ecfbdc9e838ead6',
+  EscapeHatchManager: '0xec635a831cbe1923e518570fe776c40d2cb195dd',
+  EscapeHatchTokenHolder: '0xa8495ebbfb25b32509e50d36af915caf28e969e3',
+  LST: '0xb2a9d0795525279aa4c10e957e48bb20e03c9d9a',
+  Lend: '0x76e645b92b552823982fc4c765b174d864500805',
+  Borrow: '0x4fc8ce2fb90bee1a8567516b139cd62f29300487',
+  PriceFeed: '0xae78e3f3f7fcbf6f2b79c472859cad7e81829c3b',
+  CurrencyDao: '0x8d0c2c27fc186cd6989006c86a5dbca0f5184275',
+  InterestPoolDao: '0x80b7c094a954c3f47b08bc9de35c720f2e07e828',
+  UnderwriterPoolDao: '0xeb9310013ca4ad9094ba521c93411972c1fb5fb1',
+  MarketDao: '0xc9ba788ca89c00d1702570a81b349b22024ce36d',
+  ShieldPayoutDao: '0x959aa10df0b9797a1a187db79ba8072ce996724e',
+  PoolNameRegistry: '0x576028fdb2c23df91e51c291431a019f5bb08cfe',
+  PositionRegistry: '0x7ae6552768f46d4bc1f6d979ee9300762168ebce',
+  CurrencyPool: '0x0f965f73525aeb0f5e1027e1e4414c4721f32438',
+  InterestPool: '0xb208c91d980df592f75103787332f78006be76fe',
+  UnderwriterPool: '0x2a6807802723cb64a778911c5b010f83236e091d',
+  PriceOracle: '0x0218c72a4764036212940da2104c9dfe9669b15a',
+  CollateralAuctionCurve: '0x49e15ac148bd76fe3081387c2eac38e733093afd',
+  ERC20: '0xa244ed72c056b1ba2f68e42a5ea18b268a93a50a',
+  MultiFungibleToken: '0x3cfa9944f390fd6b95ac7c355852133f9d593153',
+  ProtocolDao: '0xd89279bf82f8c64334421a4ab078a7204b6c0ad5',
 }
 
 function Home() {
   const [library, setLibrary] = useState(null)
   const [active, setActive] = useState(0)
+  const [supportTokens, setSupportTokens] = useState([])
 
   const handleMessage = (event, params) => {
-    console.log(event, params)
+    switch (event) {
+      case 'BALANCE_UPDATED':
+        setSupportTokens(params.data)
+        break
+      default:
+        console.log(event, params)
+    }
   }
 
   useEffect(() => {
@@ -105,7 +117,9 @@ function Home() {
             ))}
           </SideBar>
           <Content>
-            {active === 0 && <Tokens />}
+            {active === 0 && (
+              <Tokens supportTokens={supportTokens} library={library} />
+            )}
             {active > 0 && <p>Coming soon...</p>}
           </Content>
         </Wrapper>
