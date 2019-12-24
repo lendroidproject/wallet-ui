@@ -133,17 +133,49 @@ function Tokens({ library, supportTokens }) {
     switch (slot) {
       case 'wrap': {
         const { token } = data
-        const amount = prompt('Please enter your amount', 1)
-        if (amount) {
-          console.log(library.contracts.onWrap(token, amount))
+        const { contracts, address, web3Utils } = library.contracts
+        if (contracts[token]) {
+          contracts[token].methods
+            .allowance(address, contracts.CurrencyDao._address)
+            .call()
+            .then(value => {
+              if (Number(value) === 0) {
+                contracts[token].methods
+                  .approve(contracts.CurrencyDao._address, web3Utils.toWei(1000))
+                  .send({ from: address })
+              } else {
+                const amount = prompt('Please enter your amount', 1)
+                if (amount) {
+                  library.contracts
+                    .onWrap(token, amount)
+                    .then(() => alert('Wrapped!'))
+                }
+              }
+            })
         }
         break
       }
       case 'unwrap': {
         const { token } = data
-        const amount = prompt('Please enter your amount', 1)
-        if (amount) {
-          console.log(library.contracts.onUnwrap(token, amount))
+        const { contracts, address, web3Utils } = library.contracts
+        if (contracts[token]) {
+          contracts[token].methods
+            .allowance(address, contracts.CurrencyDao._address)
+            .call()
+            .then(value => {
+              if (Number(value) === 0) {
+                contracts[token].methods
+                  .approve(contracts.CurrencyDao._address, web3Utils.toWei(1000))
+                  .send({ from: address })
+              } else {
+                const amount = prompt('Please enter your amount', 1)
+                if (amount) {
+                  library.contracts
+                    .onUnwrap(token, amount)
+                    .then(() => alert('Unwrapped!'))
+                }
+              }
+            })
         }
         break
       }
