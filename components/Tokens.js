@@ -38,8 +38,16 @@ const Wrapper = styled.div`
 `
 
 const tokens = [
-  { value: 'tokens', label: 'Tokens' },
-  { value: 'wrappedTokens', label: 'Wrapped Tokens' },
+  {
+    value: 'tokens',
+    label: 'Tokens',
+    filter: ({ token }) => !token.includes('L_'),
+  },
+  {
+    value: 'wrappedTokens',
+    label: 'Wrapped Tokens',
+    filter: ({ token }) => token.includes('L_'),
+  },
   { value: 'sufiTokens', label: 'SUFI Tokens' },
   { value: 'poolshareTokens', label: 'Poolshare Tokens' },
 ]
@@ -129,7 +137,7 @@ const actions = {
 function Tokens({ library, supportTokens }) {
   const [active, setActive] = useState('tokens')
 
-  const handleAction = (value, slot, data) => {
+  const handleAction = async (value, slot, data) => {
     switch (slot) {
       case 'wrap': {
         const { token } = data
@@ -146,9 +154,10 @@ function Tokens({ library, supportTokens }) {
               } else {
                 const amount = prompt('Please enter your amount', 1)
                 if (amount) {
-                  library.contracts
-                    .onWrap(token, amount)
-                    .then(() => alert('Wrapped!'))
+                  library.contracts.onWrap(token, amount).then(() => {
+                    alert('Wrapped!')
+                    library.contracts.getBalances()
+                  })
                 }
               }
             })
@@ -156,7 +165,7 @@ function Tokens({ library, supportTokens }) {
         break
       }
       case 'unwrap': {
-        const { token } = data
+        const token = data.token.replace('L_', '')
         const { contracts, address, web3Utils } = library.contracts
         if (contracts[token]) {
           contracts[token].methods
@@ -170,9 +179,10 @@ function Tokens({ library, supportTokens }) {
               } else {
                 const amount = prompt('Please enter your amount', 1)
                 if (amount) {
-                  library.contracts
-                    .onUnwrap(token, amount)
-                    .then(() => alert('Unwrapped!'))
+                  library.contracts.onUnwrap(token, amount).then(() => {
+                    alert('Unwrapped!')
+                    library.contracts.getBalances()
+                  })
                 }
               }
             })
@@ -186,7 +196,7 @@ function Tokens({ library, supportTokens }) {
 
   return (
     <Wrapper>
-      {tokens.map(({ value, label }) => (
+      {tokens.map(({ value, label, filter }) => (
         <div key={value}>
           <button
             className={`accordion ${active === value ? 'active' : ''}`}
@@ -197,7 +207,7 @@ function Tokens({ library, supportTokens }) {
           <div className={`panel ${active === value ? 'active' : ''}`}>
             <Table
               headers={headers[value] || []}
-              data={supportTokens}
+              data={filter ? supportTokens.filter(filter) : supportTokens}
               actions={actions[value] || []}
               onAction={(slot, data) => handleAction(value, slot, data)}
             />
