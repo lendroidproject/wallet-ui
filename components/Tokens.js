@@ -41,14 +41,22 @@ const tokens = [
   {
     value: 'tokens',
     label: 'Tokens',
-    filter: ({ token }) => !token.includes('L_'),
+    filter: ({ token }) => !token.includes('_'),
   },
   {
     value: 'wrappedTokens',
     label: 'Wrapped Tokens',
     filter: ({ token }) => token.includes('L_'),
   },
-  { value: 'sufiTokens', label: 'SUFI Tokens' },
+  {
+    value: 'sufiTokens',
+    label: 'SUFI Tokens',
+    filter: ({ token }) =>
+      token.includes('S_') ||
+      token.includes('F_') ||
+      token.includes('U_') ||
+      token.includes('I_'),
+  },
   { value: 'poolshareTokens', label: 'Poolshare Tokens' },
 ]
 
@@ -186,6 +194,30 @@ function Tokens({ library, supportTokens }) {
                 }
               }
             })
+        }
+        break
+      }
+      case 'split': {
+        // const {
+        //   contracts: { ProtocolDao, InterestPoolDao, CurrencyDao, DAI },
+        // } = library.contracts
+        // console.log(await ProtocolDao.methods.daos(1).call())
+        // console.log(await ProtocolDao.methods.daos(2).call())
+        // console.log(await InterestPoolDao.methods.initialized().call())
+        // console.log(await InterestPoolDao.methods.paused().call())
+        // console.log(await CurrencyDao.methods.is_token_supported(DAI._address).call())
+        // console.log(library)
+        // return
+        const token = data.token.replace('L_', '')
+        const { contracts } = library.contracts
+        if (contracts[token]) {
+          const amount = prompt('Please enter your amount', 1)
+          if (amount) {
+            library.contracts.onSplit(token, amount).then(() => {
+              alert('Splitted!')
+              library.contracts.getBalances()
+            })
+          }
         }
         break
       }
