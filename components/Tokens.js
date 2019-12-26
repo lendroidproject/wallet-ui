@@ -51,11 +51,12 @@ const tokens = [
   {
     value: 'sufiTokens',
     label: 'SUFI Tokens',
-    filter: ({ token }) =>
-      token.includes('S_') ||
-      token.includes('F_') ||
-      token.includes('U_') ||
-      token.includes('I_'),
+    filter: ({ token, balance }) =>
+      (token.includes('S_') ||
+        token.includes('F_') ||
+        token.includes('U_') ||
+        token.includes('I_')) &&
+      balance >= 0,
   },
   { value: 'poolshareTokens', label: 'Poolshare Tokens' },
 ]
@@ -75,8 +76,15 @@ const headers = {
   ],
   wrappedTokens: [
     {
+      label: 'T',
+      key: 'token',
+      access: val => val.split('_')[0],
+      style: { textAlign: 'left' },
+    },
+    {
       label: 'Name',
       key: 'token',
+      access: val => val.split('_')[1],
       style: { textAlign: 'left' },
     },
     {
@@ -87,9 +95,29 @@ const headers = {
   ],
   sufiTokens: [
     {
+      label: 'T',
+      key: 'token',
+      access: val => val.split('_')[0],
+      style: { textAlign: 'left' },
+    },
+    {
       label: 'Name',
       key: 'token',
+      access: val => val.split('_')[1],
       style: { textAlign: 'left' },
+    },
+    {
+      label: 'Expiry',
+      key: 'token',
+      access: val => new Date(val.split('_')[2] * 1000).getFullYear(),
+    },
+    {
+      label: 'Underlying',
+      key: 'underlying',
+    },
+    {
+      label: 'Strike',
+      key: 'strike',
     },
     {
       label: 'Balance',
@@ -120,6 +148,7 @@ const actions = {
     {
       label: 'Wrap',
       slot: 'wrap',
+      visible: ({ balance }) => balance > 0,
     },
   ],
   wrappedTokens: [
@@ -130,14 +159,36 @@ const actions = {
     {
       label: 'Unwrap',
       slot: 'unwrap',
+      visible: ({ balance }) => balance > 0,
     },
     {
       label: 'Split',
       slot: 'split',
+      visible: ({ balance }) => balance > 0,
     },
     {
       label: 'Contribute',
       slot: 'contribute',
+    },
+  ],
+  sufiTokens: [
+    {
+      label: 'Transfer',
+      slot: 'transfer',
+    },
+    {
+      label: 'Borrow',
+      slot: 'borrow',
+    },
+    {
+      label: 'Fuse',
+      slot: 'fuse',
+      visible: ({ balance }) => balance > 0,
+    },
+    {
+      label: 'Exercise',
+      slot: 'excercise',
+      visible: ({ underlying }) => !!underlying,
     },
   ],
 }
@@ -198,16 +249,6 @@ function Tokens({ library, supportTokens }) {
         break
       }
       case 'split': {
-        // const {
-        //   contracts: { ProtocolDao, InterestPoolDao, CurrencyDao, DAI },
-        // } = library.contracts
-        // console.log(await ProtocolDao.methods.daos(1).call())
-        // console.log(await ProtocolDao.methods.daos(2).call())
-        // console.log(await InterestPoolDao.methods.initialized().call())
-        // console.log(await InterestPoolDao.methods.paused().call())
-        // console.log(await CurrencyDao.methods.is_token_supported(DAI._address).call())
-        // console.log(library)
-        // return
         const token = data.token.replace('L_', '')
         const { contracts } = library.contracts
         if (contracts[token]) {
@@ -215,6 +256,20 @@ function Tokens({ library, supportTokens }) {
           if (amount) {
             library.contracts.onSplit(token, amount).then(() => {
               alert('Splitted!')
+              library.contracts.getBalances()
+            })
+          }
+        }
+        break
+      }
+      case 'fuse': {
+        const token = data.token.split('_')[1]
+        const { contracts } = library.contracts
+        if (contracts[token]) {
+          const amount = prompt('Please enter your amount', 1)
+          if (amount) {
+            library.contracts.onFuse(data.token, amount).then(() => {
+              alert('Fused!')
               library.contracts.getBalances()
             })
           }

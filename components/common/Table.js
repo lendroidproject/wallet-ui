@@ -4,7 +4,7 @@ const Wrapper = styled.div`
   padding: 10px;
   table {
     width: 100%;
-    table-layout: fixed;
+    text-align: center;
 
     thead tr th {
       background: lightgrey;
@@ -41,13 +41,9 @@ function Table({ headers, data = [], actions, onAction }) {
 
   const getDisplayData = (data, header) => {
     let ret = data[header.key]
-
-    if (header.key === 'loanDuration') {
-      ret = ret.split(' ')[0]
-    }
-
+    if (header.access) ret = header.access(ret)
     if (header.precision) ret = setPrecision(ret, header.precision)
-    return <div>{ret}</div>
+    return <div>{ret || '-'}</div>
   }
 
   return (
@@ -63,8 +59,6 @@ function Table({ headers, data = [], actions, onAction }) {
             <th>Actions</th>
           </tr>
         </thead>
-      </table>
-      <table cellPadding="0" cellSpacing="0" border="0">
         <tbody>
           {data.map((d, dIndex) => {
             return (
@@ -75,16 +69,20 @@ function Table({ headers, data = [], actions, onAction }) {
                   </td>
                 ))}
                 <td>
-                  {actions.map(({ label, slot }) => (
-                    <button key={slot} onClick={() => onAction(slot, d)}>{label}</button>
-                  ))}
+                  {actions
+                    .filter(({ visible }) => !visible || visible(d))
+                    .map(({ label, slot }) => (
+                      <button key={slot} onClick={() => onAction(slot, d)}>
+                        {label}
+                      </button>
+                    ))}
                 </td>
               </tr>
             )
           })}
           {data.length === 0 && (
             <tr>
-              <td colSpan={headers.length} style={{ textAlign: 'center' }}>
+              <td colSpan={headers.length + 1} style={{ textAlign: 'center' }}>
                 No Data
               </td>
             </tr>
