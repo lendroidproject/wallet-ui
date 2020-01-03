@@ -114,11 +114,14 @@ const headers = {
     },
     {
       label: 'Underlying',
-      key: 'underlying',
+      key: 'token',
+      access: val => val.split('_')[3],
     },
     {
       label: 'Strike',
       key: 'strike',
+      key: 'token',
+      access: val => val.split('_')[4],
     },
     {
       label: 'Balance',
@@ -418,8 +421,8 @@ function Tokens({ library, supportTokens }) {
           data: formFields[enumSlots[slot]]({
             amount: data.balance,
             expiry: toDateTime(data.token.split('_')[2] * 1000),
-            underlying: data.underlying,
-            strike: data.strike,
+            underlying: data.token.split('_')[3].replace('-', ''),
+            strike: data.token.split('_')[4].replace('-', ''),
           }),
         })
         break
