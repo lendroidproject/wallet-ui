@@ -110,7 +110,7 @@ const headers = {
     {
       label: 'Expiry',
       key: 'token',
-      access: val => new Date(val.split('_')[2] * 1000).getFullYear(),
+      access: val => toDateTime(new Date(val.split('_')[2] * 1000)),
     },
     {
       label: 'Underlying',
@@ -212,6 +212,7 @@ const formFields = {
         label: 'Amount',
         required: ({ amount }) => !!amount,
         type: 'number',
+        autoFocus: true,
       },
     ],
     defaults,
@@ -223,6 +224,7 @@ const formFields = {
         label: 'Amount',
         required: ({ amount }) => !!amount,
         type: 'number',
+        autoFocus: true,
       },
       {
         key: 'expiry',
@@ -255,6 +257,7 @@ const formFields = {
         label: 'Amount',
         required: ({ amount }) => !!amount,
         type: 'number',
+        autoFocus: true,
       },
       {
         key: 'expiry',
@@ -322,7 +325,7 @@ function Tokens({ library, supportTokens }) {
             strike: Number(strike),
           })
           .then(() => {
-            library.contracts.getBalances()
+            library.contracts.getBalances(true)
             setModal(null)
           })
         break
@@ -332,7 +335,7 @@ function Tokens({ library, supportTokens }) {
         library.contracts
           .onFuse(token, {
             amount,
-            expiry: Math.round(new Date(expiry).getTime() / 1000),
+            expiry: Math.round(new Date(expiry + '.000Z').getTime() / 1000),
             underlying,
             strike: Number(strike),
           })

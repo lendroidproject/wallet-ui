@@ -54,7 +54,10 @@ function Modal({ title, fields, defaults, onSubmit, onClose }) {
   const [submitting, setSubmitting] = useState(false)
 
   return (
-    <Wrapper onMouseDown={onClose}>
+    <Wrapper
+      onMouseDown={onClose}
+      onKeyDown={e => (e.keyCode === 27 ? onClose() : null)}
+    >
       <Content onMouseDown={e => e.stopPropagation()}>
         <h2>{title}</h2>
         <form
@@ -74,7 +77,9 @@ function Modal({ title, fields, defaults, onSubmit, onClose }) {
                 >
                   <option defaultValue>None</option>
                   {options.map(key => (
-                    <option key={key} value={key}>{key}</option>
+                    <option key={key} value={key}>
+                      {key}
+                    </option>
                   ))}
                 </select>
               ) : (
