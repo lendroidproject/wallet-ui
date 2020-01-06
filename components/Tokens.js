@@ -244,8 +244,30 @@ const formFields = {
     ],
     defaults,
   }),
-  3: defaults => ({
+  3: (defaults, options) => ({
     fields: [
+      {
+        key: 'token',
+        label: 'Fuse Token',
+        type: 'select',
+        options: options.tokens,
+        noNoneValue: true,
+        labelValue: ({ token }) =>
+          token
+            .replace('S_', '')
+            .replace('F_', '')
+            .replace(/_-/gi, ''),
+        onUpdate: ({ token, balance }, { form, setForm }) => {
+          setForm({
+            ...form,
+            amount: balance,
+            expiry: toDateTime(token.split('_')[2] * 1000),
+            underlying: token.split('_')[3].replace('-', ''),
+            strike: token.split('_')[4].replace('-', ''),
+          })
+        },
+        hidden: options.tokens.length <= 1,
+      },
       {
         key: 'amount',
         label: 'Amount',
@@ -412,15 +434,34 @@ function Tokens({ library, supportTokens }) {
         break
       }
       case 'fuse': {
+        const tokens = supportTokens.filter(
+          ({ token, balance }) =>
+            (token.includes(
+              `S_${data.token.split('_')[1]}_${data.token.split('_')[2]}`
+            ) ||
+              token.includes(
+                `F_${data.token.split('_')[1]}_${data.token.split('_')[2]}`
+              )) &&
+            Number(balance) > 0
+        )
+        let defaultData = data
+        if (!data.token.split('_')[3].replace('-', '')) {
+          defaultData = tokens[0]
+        }
         setModal({
           slot,
           token: data.token,
-          data: formFields[enumSlots[slot]]({
-            amount: data.balance,
-            expiry: toDateTime(data.token.split('_')[2] * 1000),
-            underlying: data.token.split('_')[3].replace('-', ''),
-            strike: data.token.split('_')[4].replace('-', ''),
-          }),
+          data: formFields[enumSlots[slot]](
+            {
+              amount: defaultData.balance,
+              expiry: toDateTime(defaultData.token.split('_')[2] * 1000),
+              underlying: defaultData.token.split('_')[3].replace('-', ''),
+              strike: defaultData.token.split('_')[4].replace('-', ''),
+            },
+            {
+              tokens,
+            }
+          ),
         })
         break
       }

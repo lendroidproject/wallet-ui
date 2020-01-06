@@ -67,31 +67,57 @@ function Modal({ title, fields, defaults, onSubmit, onClose }) {
             setSubmitting(true)
           }}
         >
-          {fields.map(({ key, label, required, type, options, ...props }) => (
-            <InputField key={key}>
-              <label>{label}</label>
-              {type === 'select' ? (
-                <select
-                  defaultValue={null}
-                  onChange={e => setForm({ ...form, [key]: e.target.value })}
-                >
-                  <option defaultValue>None</option>
-                  {options.map(key => (
-                    <option key={key} value={key}>
-                      {key}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  {...props}
-                  type={type}
-                  value={form[key] || ''}
-                  onChange={e => setForm({ ...form, [key]: e.target.value })}
-                />
-              )}
-            </InputField>
-          ))}
+          {fields.map(
+            ({
+              key,
+              label,
+              required,
+              type,
+              noNoneValue,
+              labelValue,
+              onUpdate,
+              options,
+              hidden,
+              ...props
+            }) =>
+              hidden ? null : (
+                <InputField key={key}>
+                  <label>{label}</label>
+                  {type === 'select' ? (
+                    <select
+                      defaultValue={null}
+                      onChange={e =>
+                        onUpdate
+                          ? onUpdate(JSON.parse(e.target.value), {
+                              form,
+                              setForm,
+                            })
+                          : setForm({ ...form, [key]: e.target.value })
+                      }
+                    >
+                      {!noNoneValue && <option defaultValue>None</option>}
+                      {options.map((key, idx) => (
+                        <option
+                          key={idx}
+                          value={
+                            typeof key === 'object' ? JSON.stringify(key) : key
+                          }
+                        >
+                          {labelValue ? labelValue(key) : key}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      {...props}
+                      type={type}
+                      value={form[key] || ''}
+                      onChange={e => setForm({ ...form, [key]: e.target.value })}
+                    />
+                  )}
+                </InputField>
+              )
+          )}
           <Footer>
             <button type="submit" disabled={!valid || submitting}>
               Submit
