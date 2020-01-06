@@ -26,7 +26,7 @@ const Wrapper = styled.div`
   }
 `
 
-function Table({ headers, data = [], actions, onAction }) {
+function Table({ headers, data = [], sort, actions, onAction }) {
   const addCommas = value => {
     return (value + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,')
   }
@@ -60,7 +60,7 @@ function Table({ headers, data = [], actions, onAction }) {
           </tr>
         </thead>
         <tbody>
-          {data.map((d, dIndex) => {
+          {(sort ? data.sort(sort) : data).map((d, dIndex) => {
             return (
               <tr key={dIndex}>
                 {headers.map((h, hIndex) => (

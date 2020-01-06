@@ -58,6 +58,8 @@ const tokens = [
         token.includes('U_') ||
         token.includes('I_')) &&
       balance >= 0,
+    sort: ({ token: t1 }, { token: t2 }) =>
+      Number(t1.split('_')[2]) - Number(t2.split('_')[2]),
   },
   { value: 'poolshareTokens', label: 'Poolshare Tokens' },
 ]
@@ -472,7 +474,7 @@ function Tokens({ library, supportTokens }) {
 
   return (
     <Wrapper>
-      {tokens.map(({ value, label, filter }) => (
+      {tokens.map(({ value, label, filter, sort }) => (
         <div key={value}>
           <button
             className={`accordion ${active === value ? 'active' : ''}`}
@@ -484,15 +486,9 @@ function Tokens({ library, supportTokens }) {
             <Table
               headers={headers[value] || []}
               data={filter ? supportTokens.filter(filter) : supportTokens}
+              sort={sort}
               actions={actions[value] || []}
-              onAction={(slot, data) =>
-                handleAction(
-                  value,
-                  slot,
-                  data,
-                  filter ? supportTokens.filter(filter) : supportTokens
-                )
-              }
+              onAction={(slot, data) => handleAction(value, slot, data)}
             />
           </div>
         </div>
