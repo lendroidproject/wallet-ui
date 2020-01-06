@@ -77,15 +77,9 @@ const headers = {
   ],
   wrappedTokens: [
     {
-      label: 'T',
-      key: 'token',
-      access: val => val.split('_')[0],
-      style: { textAlign: 'left' },
-    },
-    {
       label: 'Name',
-      key: 'token',
-      access: val => val.split('_')[1],
+      key: '',
+      access: ({ name, token: val }) => name || val.split('_')[1],
       style: { textAlign: 'left' },
     },
     {

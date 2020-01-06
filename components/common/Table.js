@@ -40,7 +40,7 @@ function Table({ headers, data = [], actions, onAction }) {
   }
 
   const getDisplayData = (data, header) => {
-    let ret = data[header.key]
+    let ret = header.key ? data[header.key] : data
     if (header.access) ret = header.access(ret)
     if (header.precision) ret = setPrecision(ret, header.precision)
     return <div>{ret || '-'}</div>
