@@ -31,6 +31,8 @@ const Wrapper = styled.div`
     display: none;
     background-color: white;
     overflow: hidden;
+    padding: 15px;
+    text-align: center;
 
     &.active {
       display: block;
@@ -38,7 +40,7 @@ const Wrapper = styled.div`
   }
 `
 
-const tokens = [
+const tabs = [
   {
     value: 'tokens',
     label: 'Tokens',
@@ -308,7 +310,7 @@ function getEOY() {
   return new Date(`${new Date().getFullYear()}-12-31`).toISOString().split('.')[0]
 }
 
-function Tokens({ library, supportTokens }) {
+function Wallets({ library, supportTokens }) {
   const [active, setActive] = useState('tokens')
   const [modal, setModal] = useState(null)
   const originTokens = supportTokens
@@ -474,7 +476,7 @@ function Tokens({ library, supportTokens }) {
 
   return (
     <Wrapper>
-      {tokens.map(({ value, label, filter, sort }) => (
+      {tabs.map(({ value, label, filter, sort }) => (
         <div key={value}>
           <button
             className={`accordion ${active === value ? 'active' : ''}`}
@@ -505,4 +507,4 @@ function Tokens({ library, supportTokens }) {
   )
 }
 
-export default Tokens
+export default Wallets

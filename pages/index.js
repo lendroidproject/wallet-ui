@@ -3,7 +3,8 @@ import Head from 'next/head'
 import { Lendroid } from 'lendroid-protocol'
 import styled from 'styled-components'
 
-import Tokens from '~/components/Tokens'
+import Wallets from '~/components/Wallets'
+import PoolOperator from '~/components/PoolOperator'
 
 import tokens from '~/assets/contracts.js'
 
@@ -97,9 +98,12 @@ function Home() {
           </SideBar>
           <Content>
             {active === 0 && (
-              <Tokens supportTokens={supportTokens} library={library} />
+              <Wallets supportTokens={supportTokens} library={library} />
             )}
-            {active > 0 && <p>Coming soon...</p>}
+            {active === 4 && (
+              <PoolOperator supportTokens={supportTokens} library={library} />
+            )}
+            {[1, 2, 3].includes(active) && <p>Coming soon...</p>}
           </Content>
         </Wrapper>
       ) : (
