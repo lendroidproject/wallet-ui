@@ -383,7 +383,7 @@ function Wallets({ library, supportTokens }) {
             .then(value => {
               if (Number(value) === 0) {
                 contracts[token].methods
-                  .approve(contracts.CurrencyDao._address, web3Utils.toWei(1000))
+                  .approve(contracts.CurrencyDao._address, web3Utils.toWei(data.balance))
                   .send({ from: address })
               } else {
                 setModal({

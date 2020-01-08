@@ -14,6 +14,13 @@ const Wrapper = styled.div`
   * {
     box-sizing: border-box;
   }
+
+  .loading {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `
 
 const SideBar = styled.div`
@@ -48,7 +55,7 @@ const tabs = [
 
 function Home() {
   const [library, setLibrary] = useState(null)
-  const [active, setActive] = useState(0)
+  const [active, setActive] = useState(4)
   const [supportTokens, setSupportTokens] = useState([])
 
   const handleMessage = (event, params) => {
@@ -107,7 +114,17 @@ function Home() {
           </Content>
         </Wrapper>
       ) : (
-        <div>Loading</div>
+        <div
+          className="loading"
+          style={{
+            height: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          Loading
+        </div>
       )}
     </>
   )

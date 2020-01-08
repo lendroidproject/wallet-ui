@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 
+import { RegisterPoolName } from './tabs'
+
 const Wrapper = styled.div`
   height: 100vh;
   max-height: 100vh;
@@ -57,28 +59,32 @@ const tabs = [
   {
     value: 'register',
     label: 'Register Pool Name',
-    Content: () => <div>Coming soon...</div>,
+    Content: RegisterPoolName,
   },
 ]
 
-function PoolOperator({ library, supportTokens }) {
-  const [active, setActive] = useState('riskFree')
+function PoolOperator({ library, ...props }) {
+  const [active, setActive] = useState('register')
 
   return (
     <Wrapper>
-      {tabs.map(({ value, label, Content }) => (
-        <div key={value}>
-          <button
-            className={`accordion ${active === value ? 'active' : ''}`}
-            onClick={() => setActive(value)}
-          >
-            {label}
-          </button>
-          <div className={`panel ${active === value ? 'active' : ''}`}>
-            <Content />
+      {library.contracts ? (
+        tabs.map(({ value, label, Content }) => (
+          <div key={value}>
+            <button
+              className={`accordion ${active === value ? 'active' : ''}`}
+              onClick={() => setActive(value)}
+            >
+              {label}
+            </button>
+            <div className={`panel ${active === value ? 'active' : ''}`}>
+              <Content library={library} {...props} />
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <div className="loading">Loading...</div>
+      )}
     </Wrapper>
   )
 }
