@@ -13,6 +13,10 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+
+    button {
+      padding: 10px;
+    }
   }
 `
 
@@ -57,13 +61,13 @@ function RegisterPoolName({ library, supportTokens }) {
   const [stake, setStake] = useState(0)
   const [allowance, setAllowance] = useState(0)
   const dataLST = findItem(supportTokens, 'token', 'LST')
+  const {
+    address,
+    contracts: { LST, CurrencyDao },
+    web3Utils,
+  } = library.contracts
 
   const getAllowance = () => {
-    const {
-      address,
-      contracts: { LST, CurrencyDao },
-      web3Utils,
-    } = library.contracts
     LST.methods
       .allowance(address, CurrencyDao._address)
       .call()
@@ -77,11 +81,6 @@ function RegisterPoolName({ library, supportTokens }) {
   }
 
   const handleUnlock = () => {
-    const {
-      address,
-      contracts: { LST, CurrencyDao },
-      web3Utils,
-    } = library.contracts
     LST.methods
       .approve(CurrencyDao._address, web3Utils.toWei(dataLST.balance))
       .send({ from: address })
@@ -102,6 +101,7 @@ function RegisterPoolName({ library, supportTokens }) {
     e.preventDefault()
     library.contracts.onRegisterPoolName(poolName).then(() => {
       handlePoolName()
+      library.contracts.getPoolNames()
     })
   }
 
@@ -131,7 +131,7 @@ function RegisterPoolName({ library, supportTokens }) {
             </button>
           )}
         </p>
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: 'center', margin: 20 }}>
           <button type="submit" disabled={!poolName || allowance < stake}>
             Register Pool Name
           </button>

@@ -55,13 +55,17 @@ const tabs = [
 
 function Home() {
   const [library, setLibrary] = useState(null)
-  const [active, setActive] = useState(4)
+  const [active, setActive] = useState(0)
   const [supportTokens, setSupportTokens] = useState([])
+  const [poolNames, setPoolNames] = useState([])
 
   const handleMessage = (event, params) => {
     switch (event) {
       case 'BALANCE_UPDATED':
         setSupportTokens(params.data)
+        break
+      case 'POOL_NAME_FETCHED':
+        setPoolNames(params.data)
         break
       default:
         console.log(event, params)
@@ -108,7 +112,11 @@ function Home() {
               <Wallets supportTokens={supportTokens} library={library} />
             )}
             {active === 4 && (
-              <PoolOperator supportTokens={supportTokens} library={library} />
+              <PoolOperator
+                supportTokens={supportTokens}
+                poolNames={poolNames}
+                library={library}
+              />
             )}
             {[1, 2, 3].includes(active) && <p>Coming soon...</p>}
           </Content>
