@@ -75,6 +75,7 @@ function Modal({ title, fields, defaults, onSubmit, onClose }) {
               type,
               noNoneValue,
               labelValue,
+              valueKey,
               onUpdate,
               options,
               hidden,
@@ -95,12 +96,20 @@ function Modal({ title, fields, defaults, onSubmit, onClose }) {
                           : setForm({ ...form, [key]: e.target.value })
                       }
                     >
-                      {!noNoneValue && <option defaultValue>None</option>}
+                      {!noNoneValue && (
+                        <option defaultValue value="">
+                          None
+                        </option>
+                      )}
                       {options.map((key, idx) => (
                         <option
                           key={idx}
                           value={
-                            typeof key === 'object' ? JSON.stringify(key) : key
+                            valueKey
+                              ? key[valueKey]
+                              : typeof key === 'object'
+                              ? JSON.stringify(key)
+                              : key
                           }
                         >
                           {labelValue ? labelValue(key) : key}

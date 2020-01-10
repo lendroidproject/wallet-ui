@@ -108,7 +108,7 @@ const headers = {
     {
       label: 'Expiry',
       key: 'token',
-      access: val => toDateTime(new Date(val.split('_')[2] * 1000)),
+      access: val => val.split('_')[2],
     },
     {
       label: 'Underlying',
@@ -228,7 +228,11 @@ const formFields = {
         key: 'expiry',
         label: 'Expiry',
         required: ({ expiry }) => !!expiry,
-        type: 'datetime-local',
+        type: 'select',
+        options: options.expiries,
+        noNoneValue: true,
+        valueKey: 'name',
+        labelValue: ({ name, date }) => `${name} (${date})`,
       },
       {
         key: 'underlying',
@@ -265,9 +269,9 @@ const formFields = {
           setForm({
             ...form,
             amount: balance,
-            expiry: toDateTime(token.split('_')[2] * 1000),
+            expiry: token.split('_')[2],
             underlying: token.split('_')[3].replace('-', ''),
-            strike: token.split('_')[4].replace('-', ''),
+            strike: token.split('_')[4].replace('-', '0'),
           })
         },
         hidden: options.tokens.length <= 1,
@@ -282,7 +286,7 @@ const formFields = {
       {
         key: 'expiry',
         label: 'Expiry',
-        type: 'datetime-local',
+        type: 'text',
         disabled: true,
       },
       {
@@ -302,15 +306,8 @@ const formFields = {
   }),
 }
 
-function toDateTime(date) {
-  return new Date(date).toISOString().split('.')[0]
-}
-
-function getEOY() {
-  return new Date(`${new Date().getFullYear()}-12-31`).toISOString().split('.')[0]
-}
-
 function Wallets({ library, supportTokens }) {
+  const { expiries } = library.contracts || {}
   const [active, setActive] = useState('tokens')
   const [modal, setModal] = useState(null)
   const originTokens = supportTokens
@@ -340,7 +337,7 @@ function Wallets({ library, supportTokens }) {
         library.contracts
           .onSplit(token, {
             amount,
-            expiry: Math.round(new Date(expiry).getTime() / 1000),
+            expiry,
             underlying,
             strike: Number(strike),
           })
@@ -355,7 +352,7 @@ function Wallets({ library, supportTokens }) {
         library.contracts
           .onFuse(token, {
             amount,
-            expiry: Math.round(new Date(expiry + '.000Z').getTime() / 1000),
+            expiry,
             underlying,
             strike: Number(strike),
           })
@@ -383,7 +380,10 @@ function Wallets({ library, supportTokens }) {
             .then(value => {
               if (Number(value) === 0) {
                 contracts[token].methods
-                  .approve(contracts.CurrencyDao._address, web3Utils.toWei(data.balance))
+                  .approve(
+                    contracts.CurrencyDao._address,
+                    web3Utils.toWei(data.balance)
+                  )
                   .send({ from: address })
               } else {
                 setModal({
@@ -427,11 +427,12 @@ function Wallets({ library, supportTokens }) {
           data: formFields[enumSlots[slot]](
             {
               amount: data.balance,
-              expiry: getEOY(),
+              expiry: expiries[0].timestamp,
               strike: '0',
             },
             {
-              underlying: originTokens.filter(t => t !== token),
+              underlying: originTokens.filter(t => t !== token && t !== 'LST'),
+              expiries,
             }
           ),
         })
@@ -458,7 +459,7 @@ function Wallets({ library, supportTokens }) {
           data: formFields[enumSlots[slot]](
             {
               amount: defaultData.balance,
-              expiry: toDateTime(defaultData.token.split('_')[2] * 1000),
+              expiry: defaultData.token.split('_')[2],
               underlying: defaultData.token.split('_')[3].replace('-', ''),
               strike: defaultData.token.split('_')[4].replace('-', ''),
             },

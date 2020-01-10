@@ -62,14 +62,15 @@ const InputField = styled.div`
 
 function NewPool({ library, poolNames }) {
   const { balanceTokens } = library.contracts
+  const currencies = balanceTokens.filter(t => t !== 'LST')
 
   const defaults = {
     riskFree: false,
     poolName: '',
     feePercentI: 1,
     feePercentS: 1,
-    currency: balanceTokens[0],
-    onlyMe: false,
+    currency: currencies[0],
+    onlyMe: true,
     exchangeRate: 50,
     expiryLimit: 90,
   }
@@ -87,6 +88,11 @@ function NewPool({ library, poolNames }) {
       .onCreatePool(form)
       .then(() => {
         console.log('Pool Created')
+        if (form.riskFree) {
+          library.contracts.fetchRiskFreePools()
+        } else {
+          library.contracts.getRiskyPools()
+        }
       })
       .finally(() => setForm(defaults))
   }
@@ -100,7 +106,7 @@ function NewPool({ library, poolNames }) {
             <input
               name="riskFree"
               type="checkbox"
-              value={form.riskFree}
+              checked={form.riskFree}
               onChange={e => handleForm('riskFree', e.target.checked)}
             />
             Risk-Free
@@ -171,14 +177,12 @@ function NewPool({ library, poolNames }) {
               value={form.currency}
               onChange={e => handleForm('currency', e.target.value)}
             >
-              <option disabled>Choose Currency</option>
-              {balanceTokens
-                .filter(t => t !== 'LST')
-                .map((token, idx) => (
-                  <option value={token} key={idx}>
-                    {token}
-                  </option>
-                ))}
+              <option defaultValue>Choose Currency</option>
+              {currencies.map((token, idx) => (
+                <option value={token} key={idx}>
+                  {token}
+                </option>
+              ))}
             </select>
           </InputField>
           <InputField>
@@ -188,7 +192,7 @@ function NewPool({ library, poolNames }) {
                 disabled
                 name="onlyMe"
                 type="checkbox"
-                value={form.onlyMe}
+                checked={form.onlyMe}
                 onChange={e => handleForm('onlyMe', e.target.checked)}
               />
               Only Me

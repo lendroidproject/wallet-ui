@@ -60,6 +60,7 @@ function Home() {
   const [poolNames, setPoolNames] = useState([])
 
   const handleMessage = (event, params) => {
+    console.log(event, params)
     switch (event) {
       case 'BALANCE_UPDATED':
         setSupportTokens(params.data)
@@ -68,7 +69,7 @@ function Home() {
         setPoolNames(params.data)
         break
       default:
-        console.log(event, params)
+        break
     }
   }
 
