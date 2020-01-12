@@ -156,7 +156,7 @@ function NewPool({ library, poolNames }) {
               onChange={e => handleForm('feePercentI', e.target.value)}
             />
           </InputField>
-          {form.riskFree ? (
+          {!form.riskFree ? (
             <InputField>
               <label htmlFor="feePercentS">Fee Percentage per S token</label>
               <input

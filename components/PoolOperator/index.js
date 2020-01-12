@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 
-import { NewPool, RegisterPoolName } from './tabs'
+import { MyPools, NewPool, RegisterPoolName } from './tabs'
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -44,12 +44,12 @@ const tabs = [
   {
     value: 'riskFree',
     label: 'My Risk-Free Pools',
-    Content: () => <div>Coming soon...</div>,
+    Content: props => <MyPools {...props} riskFree />,
   },
   {
     value: 'risky',
     label: 'My Risky Pools',
-    Content: () => <div>Coming soon...</div>,
+    Content: MyPools,
   },
   {
     value: 'newPool',

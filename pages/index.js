@@ -58,9 +58,16 @@ function Home() {
   const [active, setActive] = useState(0)
   const [supportTokens, setSupportTokens] = useState([])
   const [poolNames, setPoolNames] = useState([])
+  const [riskFreePools, setRiskFreePools] = useState([])
+  const [riskyPools, setRiskyPools] = useState([])
+  const supports = {
+    supportTokens,
+    poolNames,
+    riskFreePools,
+    riskyPools,
+  }
 
   const handleMessage = (event, params) => {
-    console.log(event, params)
     switch (event) {
       case 'BALANCE_UPDATED':
         setSupportTokens(params.data)
@@ -68,7 +75,14 @@ function Home() {
       case 'POOL_NAME_FETCHED':
         setPoolNames(params.data)
         break
+      case 'RISK_FREE_POOL_FETCHED':
+        setRiskFreePools(params.data)
+        break
+      case 'RISKY_POOL_FETCHED':
+        setRiskyPools(params.data)
+        break
       default:
+        console.log(event, params)
         break
     }
   }
@@ -109,16 +123,8 @@ function Home() {
             ))}
           </SideBar>
           <Content>
-            {active === 0 && (
-              <Wallets supportTokens={supportTokens} library={library} />
-            )}
-            {active === 4 && (
-              <PoolOperator
-                supportTokens={supportTokens}
-                poolNames={poolNames}
-                library={library}
-              />
-            )}
+            {active === 0 && <Wallets library={library} {...supports} />}
+            {active === 4 && <PoolOperator library={library} {...supports} />}
             {[1, 2, 3].includes(active) && <p>Coming soon...</p>}
           </Content>
         </Wrapper>
