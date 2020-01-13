@@ -146,38 +146,39 @@ const actions = {
     {
       label: 'Transfer',
       slot: 'transfer',
-      visible: ({ balance, allowance }) => balance && allowance,
+      visible: ({ balance, allowance }) => Number(balance) && Number(allowance),
     },
     {
       label: 'Wrap',
       slot: 'wrap',
-      visible: ({ balance, allowance }) => balance && allowance,
+      visible: ({ balance, allowance }) => Number(balance) && Number(allowance),
     },
     {
       label: 'Unlock',
       slot: 'wrap',
-      visible: ({ allowance }) => !allowance,
+      visible: ({ allowance }) => !Number(allowance),
     },
   ],
   wrappedTokens: [
     {
       label: 'Transfer',
       slot: 'transfer',
-      visible: ({ balance }) => balance > 0,
+      visible: ({ balance }) => Number(balance),
     },
     {
       label: 'Unwrap',
       slot: 'unwrap',
-      visible: ({ balance }) => balance > 0,
+      visible: ({ balance }) => Number(balance),
     },
     {
       label: 'Split',
       slot: 'split',
-      visible: ({ balance }) => balance > 0,
+      visible: ({ balance }) => Number(balance),
     },
     {
       label: 'Contribute',
       slot: 'contribute',
+      visible: ({ balance }) => Number(balance),
     },
   ],
   sufiTokens: [
@@ -192,7 +193,7 @@ const actions = {
     {
       label: 'Fuse',
       slot: 'fuse',
-      visible: ({ balance }) => balance > 0,
+      visible: ({ balance }) => Number(balance),
     },
     {
       label: 'Exercise',
@@ -392,6 +393,7 @@ function Wallets({ library, supportTokens }) {
                     web3Utils.toWei(data.balance)
                   )
                   .send({ from: address })
+                  .then(() => library.contracts.getBalances())
               } else {
                 setModal({
                   slot,
@@ -415,6 +417,7 @@ function Wallets({ library, supportTokens }) {
                 contracts[token].methods
                   .approve(contracts.CurrencyDao._address, web3Utils.toWei(1000))
                   .send({ from: address })
+                  .then(() => library.contracts.getBalances())
               } else {
                 setModal({
                   slot,
