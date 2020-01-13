@@ -146,17 +146,24 @@ const actions = {
     {
       label: 'Transfer',
       slot: 'transfer',
+      visible: ({ balance, allowance }) => balance && allowance,
     },
     {
       label: 'Wrap',
       slot: 'wrap',
-      visible: ({ balance }) => balance > 0,
+      visible: ({ balance, allowance }) => balance && allowance,
+    },
+    {
+      label: 'Unlock',
+      slot: 'wrap',
+      visible: ({ allowance }) => !allowance,
     },
   ],
   wrappedTokens: [
     {
       label: 'Transfer',
       slot: 'transfer',
+      visible: ({ balance }) => balance > 0,
     },
     {
       label: 'Unwrap',
