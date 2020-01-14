@@ -137,7 +137,7 @@ export default function MyPools({
     }
   }
 
-  const handleModal = form => {
+  const handleModal = (form, callback) => {
     const { poolId, slot } = modal
     switch (slot) {
       case 'offer': {
@@ -152,6 +152,9 @@ export default function MyPools({
           .then(() => {
             fetchPools()
             setModal(null)
+          })
+          .catch(() => {
+            if (callback) callback()
           })
         break
       }

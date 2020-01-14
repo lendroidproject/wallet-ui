@@ -63,7 +63,7 @@ function Modal({ title, fields, defaults, onSubmit, onClose }) {
         <form
           onSubmit={e => {
             e.preventDefault()
-            onSubmit(form)
+            onSubmit(form, () => setSubmitting(false))
             setSubmitting(true)
           }}
         >
