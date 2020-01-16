@@ -3,50 +3,28 @@ import styled from 'styled-components'
 import Table from '~/components/common/Table'
 import Modal from '~/components/common/Modal'
 
+import ModalMFT from '../components/ModalMFT'
+
 const Wrapper = styled.div`
   text-align: left;
 `
 
-const headers = [
-  {
-    label: 'Pool',
-    key: 'name',
-  },
-  {
-    label: 'Total Contribution',
-    key: '',
-    access: ({ currency, totalContributions: val }) => `${val} ${currency}`,
-  },
-  {
-    label: 'Unused Contribution',
-    key: '',
-    access: ({ currency, unusedContributions: val }) => `${val} ${currency}`,
-  },
-  {
-    label: 'Outstanding Poolshare',
-    key: 'outstandingPoolshare',
-  },
-  {
-    label: 'Contributions open to',
-    key: 'contributionsOpen',
-    access: () => 'Only Me',
-  },
-  {
-    label: 'My Unwithdrawn',
-    key: '',
-    access: ({ currency, myUnwithdrawn: val }) => `${val} ${currency}`,
-  },
-  {
-    label: 'Deposite Rate',
-    key: '',
-    access: ({ currency, depositeRate: val }) =>
-      `${val ? (1 / val).toFixed(2) : 0} ${currency}`,
-  },
-  {
-    label: 'Withdrawal Rate',
-    key: 'withdrawalRate',
-  },
-]
+const WithdrawalRate = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  div {
+    white-space: nowrap;
+
+    &.mft {
+      span {
+        color: blue;
+        cursor: pointer;
+      }
+    }
+  }
+`
 
 const actions = [
   {
@@ -128,6 +106,7 @@ export default function MyPools({
   const currencies = balanceTokens.filter(t => t !== 'LST')
   const data = (riskFree ? riskFreePools : riskyPools) || []
   const [modal, setModal] = useState(null)
+  const [modalMFT, setModalMFT] = useState(null)
 
   const fetchPools = () => {
     if (riskFree) {
@@ -207,6 +186,106 @@ export default function MyPools({
     }
   }
 
+  const headers = [
+    {
+      label: 'Pool',
+      key: 'name',
+    },
+    {
+      label: 'Total Contribution',
+      key: '',
+      access: ({ currency, totalContributions: val }) => `${val} ${currency}`,
+    },
+    {
+      label: 'Unused Contribution',
+      key: '',
+      access: ({ currency, unusedContributions: val }) => `${val} ${currency}`,
+    },
+    {
+      label: 'Outstanding Poolshare',
+      key: 'outstandingPoolshare',
+    },
+    {
+      label: 'Contributions open to',
+      key: 'contributionsOpen',
+      access: () => 'Only Me',
+    },
+    {
+      label: 'My Unwithdrawn',
+      key: '',
+      access: ({ currency, myUnwithdrawn: val }) => `${val} ${currency}`,
+    },
+    {
+      label: 'Deposite Rate',
+      key: '',
+      access: ({ currency, depositeRate: val }) =>
+        `${val ? (1 / val).toFixed(2) : 0} ${currency}`,
+    },
+    {
+      label: 'Withdrawal Rate',
+      key: 'withdrawalRate',
+      render: ({
+        markets: {
+          mfts: [lToken, ...mfts],
+        },
+      }) => (
+        <WithdrawalRate>
+          <div>
+            {lToken.rate.toFixed(2)} <span>{lToken.name}</span>
+          </div>
+          {mfts.map((mft, idx) => (
+            <div className="mft" key={idx}>
+              {mft.rate.toFixed(2)}{' '}
+              <span onClick={() => setModalMFT(mft)}>
+                {mft.name.replace(/_/gi, '')}
+              </span>
+            </div>
+          ))}
+        </WithdrawalRate>
+      ),
+    },
+  ]
+
+  const handleModalMFT = (slot, form) => {
+    const { id: poolId, type, marketInfo } = modalMFT
+    const { value } = form
+    const options = {
+      riskFree: !riskFree,
+      type,
+      marketInfo,
+    }
+
+    switch (slot) {
+      case 'changePrice': {
+        library.contracts.onChangePrice(poolId, value, options).then(() => {
+          fetchPools()
+        })
+        break
+      }
+      case 'increaseCapacity': {
+        library.contracts.onIncreaseCapacity(poolId, value, options).then(() => {
+          fetchPools()
+        })
+        break
+      }
+      case 'decreaseCapacity': {
+        library.contracts.onDecreaseCapacity(poolId, value, options).then(() => {
+          fetchPools()
+        })
+        break
+      }
+      case 'retireToken': {
+        library.contracts.onRetireToken(poolId, value, options).then(() => {
+          fetchPools()
+        })
+        break
+      }
+      default:
+        console.log(slot, form, modalMFT)
+        break
+    }
+  }
+
   return (
     <Wrapper>
       <Table
@@ -221,6 +300,14 @@ export default function MyPools({
           {...modal.data}
           onSubmit={handleModal}
           onClose={() => setModal(null)}
+        />
+      )}
+      {!!modalMFT && (
+        <ModalMFT
+          riskFree={riskFree}
+          data={modalMFT}
+          onAction={handleModalMFT}
+          onClose={() => setModalMFT(null)}
         />
       )}
     </Wrapper>

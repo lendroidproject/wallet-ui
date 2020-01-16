@@ -39,6 +39,7 @@ function Table({ headers, data = [], sort, actions, onAction }) {
   }
 
   const getDisplayData = (data, header) => {
+    if (header.render) return header.render(data)
     let ret = header.key ? data[header.key] : data
     if (header.access) ret = header.access(ret)
     if (header.precision) ret = setPrecision(ret, header.precision)

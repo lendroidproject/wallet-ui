@@ -76,9 +76,11 @@ function Home() {
         setPoolNames(params.data)
         break
       case 'RISK_FREE_POOL_FETCHED':
+        console.log(event, params)
         setRiskFreePools(params.data)
         break
       case 'RISKY_POOL_FETCHED':
+        console.log(event, params)
         setRiskyPools(params.data)
         break
       default:
