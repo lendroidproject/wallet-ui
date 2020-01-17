@@ -19,6 +19,10 @@ const Content = styled.div`
   padding: 30px;
   background: white;
   box-shadow: 3px 3px 5px grey;
+
+  h4 {
+    font-weight: normal;
+  }
 `
 
 const InputField = styled.div`
@@ -60,7 +64,7 @@ function Modal({ title, subTitle, fields, defaults, onSubmit, onClose }) {
     >
       <Content onMouseDown={e => e.stopPropagation()}>
         <h2>{title}</h2>
-        {subTitle && <h3>{subTitle}</h3>}
+        {subTitle && <h4>{subTitle}</h4>}
         <form
           onSubmit={e => {
             e.preventDefault()

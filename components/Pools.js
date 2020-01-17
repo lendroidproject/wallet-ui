@@ -132,7 +132,11 @@ export default function Pools({
         const { id: poolId, name, currency } = data
         const { balance = 0 } =
           supportTokens.find(({ token }) => token === `L_${currency}`) || {}
-        console.log(supportTokens, currency, supportTokens.find(({ token }) => token === `L_${currency}`) || {})
+        console.log(
+          supportTokens,
+          currency,
+          supportTokens.find(({ token }) => token === `L_${currency}`) || {}
+        )
         setModal({
           slot,
           poolId,
@@ -148,17 +152,19 @@ export default function Pools({
         const {
           id: poolId,
           name,
-          myUnwithdrawn,
+          poolShareBalance,
           markets: { mfts },
         } = data
-        const mftNames = mfts.map(({ name }) => name.replace(/_/gi, '')).join(',')
+        const mftNames = mfts
+          .map(({ name }) => name.replace(/_/gi, ''))
+          .join(', ')
         setModal({
           slot,
           poolId,
           title: `Withdraw from ${name}`,
           subTitle: `Withdraw Poolshare tokens for ${mftNames}?`,
           data: formFields.withdraw({
-            amount: myUnwithdrawn,
+            amount: poolShareBalance,
           }),
         })
         break
@@ -176,7 +182,7 @@ export default function Pools({
     },
     {
       label: 'Poolshare Balance',
-      key: 'myUnwithdrawn',
+      key: 'poolShareBalance',
     },
     {
       label: 'Deposite Rate',
@@ -217,17 +223,12 @@ export default function Pools({
     {
       label: 'Total Contribution',
       key: '',
-      access: ({ currency, totalContributions: val }) => `${val} ${currency}`,
+      access: ({ currency, totalContributions: val }) => `${val.toFixed(4)} ${currency}`,
     },
     {
       label: 'Utilization',
-      key: '',
-      access: ({ outstandingPoolshare, unusedContributions }) =>
-        `${
-          Number(unusedContributions)
-            ? outstandingPoolshare / unusedContributions
-            : 0
-        } %`,
+      key: 'utilization',
+      access: val => `${val.toFixed(2)} %`,
     },
     // {
     //   label: 'unusedContributions',
@@ -251,6 +252,7 @@ export default function Pools({
       {!!modal && (
         <Modal
           title={modal.title || 'Input Fields'}
+          subTitle={modal.subTitle}
           {...modal.data}
           onSubmit={handleModal}
           onClose={() => setModal(null)}
