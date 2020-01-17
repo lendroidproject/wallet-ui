@@ -130,7 +130,7 @@ const headers = {
   poolshareTokens: [
     {
       label: 'Name',
-      key: 'token',
+      key: 'name',
       style: { textAlign: 'left' },
     },
     {
@@ -201,11 +201,22 @@ const actions = {
       visible: ({ underlying }) => !!underlying,
     },
   ],
+  poolshareTokens: [
+    {
+      label: 'Transfer',
+      slot: 'transfer',
+    },
+    {
+      label: 'Withdraw',
+      slot: 'withdraw',
+    },
+  ],
 }
 
 const enumSlots = {
   wrap: 1,
   unwrap: 1,
+  withdraw: 1,
   split: 2,
   fuse: 3,
 }
@@ -314,13 +325,31 @@ const formFields = {
   }),
 }
 
-function Wallets({ library, supportTokens }) {
+function Wallets({
+  library,
+  supportTokens,
+  riskFreePools = [],
+  riskyPools = [],
+}) {
   const { expiries } = library.contracts || {}
   const [active, setActive] = useState('tokens')
   const [modal, setModal] = useState(null)
   const originTokens = supportTokens
     .filter(({ token }) => !token.includes('_'))
     .map(({ token }) => token)
+  const poolShareTokens = [
+    ...riskFreePools.map(({ id, poolShareToken }) => ({
+      riskFree: true,
+      id,
+      ...poolShareToken,
+    })),
+    ...riskyPools.map(({ id, poolShareToken }) => ({
+      riskFree: false,
+      id,
+      ...poolShareToken,
+    })),
+  ]
+
   const handleModal = form => {
     const { token, slot } = modal
     switch (slot) {
@@ -365,6 +394,22 @@ function Wallets({ library, supportTokens }) {
             strike: Number(strike),
           })
           .then(() => {
+            library.contracts.getBalances()
+            setModal(null)
+          })
+        break
+      }
+      case 'withdraw': {
+        const { poolId, riskFree } = modal
+        const { amount } = form
+        library.contracts
+          .onWithdrawContribute(poolId, amount, { riskFree: !riskFree })
+          .then(() => {
+            if (riskFree) {
+              library.contracts.fetchRiskFreePools()
+            } else {
+              library.contracts.getRiskyPools()
+            }
             library.contracts.getBalances()
             setModal(null)
           })
@@ -480,6 +525,19 @@ function Wallets({ library, supportTokens }) {
         })
         break
       }
+      case 'withdraw': {
+        const { id: poolId, name, poolShareBalance, riskFree } = data
+        setModal({
+          slot,
+          poolId,
+          riskFree,
+          title: `Withdraw from ${name}`,
+          data: formFields[enumSlots.withdraw]({
+            amount: poolShareBalance,
+          }),
+        })
+        break
+      }
       default:
         console.log(value, slot, data)
     }
@@ -487,28 +545,31 @@ function Wallets({ library, supportTokens }) {
 
   return (
     <Wrapper>
-      {tabs.map(({ value, label, filter, sort }) => (
-        <div key={value}>
-          <button
-            className={`accordion ${active === value ? 'active' : ''}`}
-            onClick={() => setActive(value)}
-          >
-            {label}
-          </button>
-          <div className={`panel ${active === value ? 'active' : ''}`}>
-            <Table
-              headers={headers[value] || []}
-              data={filter ? supportTokens.filter(filter) : supportTokens}
-              sort={sort}
-              actions={actions[value] || []}
-              onAction={(slot, data) => handleAction(value, slot, data)}
-            />
+      {tabs.map(({ value, label, filter, sort }) => {
+        const data = value === 'poolshareTokens' ? poolShareTokens : supportTokens
+        return (
+          <div key={value}>
+            <button
+              className={`accordion ${active === value ? 'active' : ''}`}
+              onClick={() => setActive(value)}
+            >
+              {label}
+            </button>
+            <div className={`panel ${active === value ? 'active' : ''}`}>
+              <Table
+                headers={headers[value] || []}
+                data={filter ? data.filter(filter) : data}
+                sort={sort}
+                actions={actions[value] || []}
+                onAction={(slot, data) => handleAction(value, slot, data)}
+              />
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
       {!!modal && (
         <Modal
-          title="Input Fields"
+          title={modal.title || 'Input Fields'}
           {...modal.data}
           onSubmit={handleModal}
           onClose={() => setModal(null)}

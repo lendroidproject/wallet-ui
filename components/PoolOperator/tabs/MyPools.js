@@ -196,12 +196,14 @@ export default function MyPools({
     {
       label: 'Total Contribution',
       key: '',
-      access: ({ currency, totalContributions: val }) => `${val} ${currency}`,
+      access: ({ currency, totalContributions: val }) =>
+        `${val.toFixed(4)} ${currency}`,
     },
     {
       label: 'Unused Contribution',
       key: '',
-      access: ({ currency, unusedContributions: val }) => `${val} ${currency}`,
+      access: ({ currency, unusedContributions: val }) =>
+        `${val.toFixed(4)} ${currency}`,
     },
     {
       label: 'Outstanding Poolshare',

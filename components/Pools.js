@@ -132,11 +132,6 @@ export default function Pools({
         const { id: poolId, name, currency } = data
         const { balance = 0 } =
           supportTokens.find(({ token }) => token === `L_${currency}`) || {}
-        console.log(
-          supportTokens,
-          currency,
-          supportTokens.find(({ token }) => token === `L_${currency}`) || {}
-        )
         setModal({
           slot,
           poolId,
