@@ -130,7 +130,7 @@ const headers = {
   poolshareTokens: [
     {
       label: 'Name',
-      key: 'name',
+      key: 'symbol',
       style: { textAlign: 'left' },
     },
     {
