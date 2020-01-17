@@ -104,7 +104,9 @@ export default function MyPools({
 }) {
   const { balanceTokens, expiries } = library.contracts
   const currencies = balanceTokens.filter(t => t !== 'LST')
-  const data = (riskFree ? riskFreePools : riskyPools) || []
+  const data = ((riskFree ? riskFreePools : riskyPools) || []).filter(
+    ({ isOwner }) => isOwner
+  )
   const [modal, setModal] = useState(null)
   const [modalMFT, setModalMFT] = useState(null)
 

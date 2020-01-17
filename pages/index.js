@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 import Wallets from '~/components/Wallets'
 import PoolOperator from '~/components/PoolOperator'
+import Pools from '~/components/Pools'
 
 import tokens from '~/assets/contracts.js'
 
@@ -126,8 +127,10 @@ function Home() {
           </SideBar>
           <Content>
             {active === 0 && <Wallets library={library} {...supports} />}
+            {active === 1 && <Pools riskFree library={library} {...supports} />}
+            {active === 2 && <Pools library={library} {...supports} />}
             {active === 4 && <PoolOperator library={library} {...supports} />}
-            {[1, 2, 3].includes(active) && <p>Coming soon...</p>}
+            {[3].includes(active) && <p>Coming soon...</p>}
           </Content>
         </Wrapper>
       ) : (

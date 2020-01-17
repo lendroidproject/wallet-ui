@@ -48,7 +48,7 @@ const Footer = styled.div`
   }
 `
 
-function Modal({ title, fields, defaults, onSubmit, onClose }) {
+function Modal({ title, subTitle, fields, defaults, onSubmit, onClose }) {
   const [form, setForm] = useState(defaults)
   const valid = fields.every(({ required }) => !required || required(form))
   const [submitting, setSubmitting] = useState(false)
@@ -60,6 +60,7 @@ function Modal({ title, fields, defaults, onSubmit, onClose }) {
     >
       <Content onMouseDown={e => e.stopPropagation()}>
         <h2>{title}</h2>
+        {subTitle && <h3>{subTitle}</h3>}
         <form
           onSubmit={e => {
             e.preventDefault()
