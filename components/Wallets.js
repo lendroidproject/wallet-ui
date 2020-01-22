@@ -350,23 +350,33 @@ function Wallets({
     })),
   ]
 
-  const handleModal = form => {
+  const handleModal = (form, callback) => {
     const { token, slot } = modal
     switch (slot) {
       case 'wrap': {
         const { amount } = form
-        library.contracts.onWrap(token, amount).then(() => {
-          library.contracts.getBalances()
-          setModal(null)
-        })
+        library.contracts
+          .onWrap(token, amount)
+          .then(() => {
+            library.contracts.getBalances()
+            setModal(null)
+          })
+          .catch(() => {
+            if (callback) callback()
+          })
         break
       }
       case 'unwrap': {
         const { amount } = form
-        library.contracts.onUnwrap(token, amount).then(() => {
-          library.contracts.getBalances()
-          setModal(null)
-        })
+        library.contracts
+          .onUnwrap(token, amount)
+          .then(() => {
+            library.contracts.getBalances()
+            setModal(null)
+          })
+          .catch(() => {
+            if (callback) callback()
+          })
         break
       }
       case 'split': {
@@ -381,6 +391,9 @@ function Wallets({
           .then(() => {
             library.contracts.getBalances(true)
             setModal(null)
+          })
+          .catch(() => {
+            if (callback) callback()
           })
         break
       }
@@ -397,6 +410,9 @@ function Wallets({
             library.contracts.getBalances()
             setModal(null)
           })
+          .catch(() => {
+            if (callback) callback()
+          })
         break
       }
       case 'withdraw': {
@@ -412,6 +428,9 @@ function Wallets({
             }
             library.contracts.getBalances()
             setModal(null)
+          })
+          .catch(() => {
+            if (callback) callback()
           })
         break
       }

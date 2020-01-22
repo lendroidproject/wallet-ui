@@ -102,16 +102,18 @@ function NewPool({
         .filter(({ name }) =>
           name.includes(`S_${form.currency}_${form.underlying}_${form.expiry}`)
         )
-        .map(({ id: mftIndex, rate, offered, marketInfo: [, , strike] }) => ({
+        .map(({ id: mftIndex, type, rate, offered, marketInfo }) => ({
           riskFree: false,
           id: poolId,
           mftIndex,
           name: poolName,
           rate,
           lRate: `${lToken.rate.toFixed(3)} ${lToken.name}`,
-          collateralRatio: 100 / Number(strike),
+          collateralRatio: 100 / Number(marketInfo[2]),
           offered,
-          strike,
+          strike: marketInfo[2],
+          type,
+          marketInfo,
         }))
     )
     .reduce((a, c) => [...a, ...c], [])
@@ -119,7 +121,7 @@ function NewPool({
     .map(({ id: poolId, name: poolName, markets: { mfts: [lToken, ...mfts] } }) =>
       mfts
         .filter(({ name }) => name.includes(`I_${form.currency}_${form.expiry}`))
-        .map(({ id: mftIndex, rate, offered }) => ({
+        .map(({ id: mftIndex, type, rate, offered, marketInfo }) => ({
           riskFree: true,
           id: poolId,
           mftIndex,
@@ -128,6 +130,8 @@ function NewPool({
           lRate: `${lToken.rate.toFixed(3)} ${lToken.name}`,
           offered,
           strike: 150,
+          type,
+          marketInfo,
         }))
     )
     .reduce((a, c) => [...a, ...c], [])
@@ -192,6 +196,15 @@ function NewPool({
 
   const handleAction = async (slot, data) => {
     switch (slot) {
+      case 'purchase':
+        const { id, type, marketInfo } = data
+        console.log(marketInfo)
+        library.contracts.onPurchase(id, type, marketInfo).then(() => {
+          console.log('Token Purchased')
+          library.contracts.getRiskFreePools()
+          library.contracts.getRiskyPools()
+        })
+        break
       default:
         console.log(slot, data)
         break
@@ -260,7 +273,8 @@ function NewPool({
           <button
             type="submit"
             disabled={
-              !selectedData || Number(selectedData.offered) < Number(form.amount)
+              !selectedData
+              //  || Number(selectedData.offered) < Number(form.amount)
             }
           >
             Get Loan

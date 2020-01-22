@@ -252,12 +252,12 @@ export default function MyPools({
   ]
 
   const handleModalMFT = (slot, form) => {
-    const { id: poolId, type, marketInfo } = modalMFT
+    const { id: poolId, type, marketInfo, marketInfoParam } = modalMFT
     const { value } = form
     const options = {
       riskFree,
       type,
-      marketInfo,
+      marketInfo: marketInfoParam || marketInfo,
     }
 
     switch (slot) {
@@ -268,6 +268,7 @@ export default function MyPools({
         break
       }
       case 'increaseCapacity': {
+        console.log(poolId, value, options)
         library.contracts.onIncreaseCapacity(poolId, value, options).then(() => {
           fetchPools()
         })
