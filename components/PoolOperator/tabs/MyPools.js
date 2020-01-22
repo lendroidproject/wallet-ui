@@ -112,7 +112,7 @@ export default function MyPools({
 
   const fetchPools = () => {
     if (riskFree) {
-      library.contracts.fetchRiskFreePools()
+      library.contracts.getRiskFreePools()
     } else {
       library.contracts.getRiskyPools()
     }
@@ -154,7 +154,7 @@ export default function MyPools({
           poolId,
           data: formFields.offer(
             {
-              expiry: expiries[0].timestamp,
+              expiry: expiries[0].name,
               strike: '0',
               iCostPerDay: 0.025,
               sCostPerDay: 0.05,
@@ -229,6 +229,7 @@ export default function MyPools({
       label: 'Withdrawal Rate',
       key: 'withdrawalRate',
       render: ({
+        id,
         markets: {
           mfts: [lToken, ...mfts],
         },
@@ -240,7 +241,7 @@ export default function MyPools({
           {mfts.map((mft, idx) => (
             <div className="mft" key={idx}>
               {mft.rate.toFixed(2)}{' '}
-              <span onClick={() => setModalMFT(mft)}>
+              <span onClick={() => setModalMFT({ ...mft, id })}>
                 {mft.name.replace(/_/gi, '')}
               </span>
             </div>
@@ -254,7 +255,7 @@ export default function MyPools({
     const { id: poolId, type, marketInfo } = modalMFT
     const { value } = form
     const options = {
-      riskFree: !riskFree,
+      riskFree,
       type,
       marketInfo,
     }
@@ -267,6 +268,7 @@ export default function MyPools({
         break
       }
       case 'increaseCapacity': {
+        console.log(poolId, value, options)
         library.contracts.onIncreaseCapacity(poolId, value, options).then(() => {
           fetchPools()
         })

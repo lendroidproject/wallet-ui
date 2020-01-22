@@ -406,7 +406,7 @@ function Wallets({
           .onWithdrawContribute(poolId, amount, { riskFree: !riskFree })
           .then(() => {
             if (riskFree) {
-              library.contracts.fetchRiskFreePools()
+              library.contracts.getRiskFreePools()
             } else {
               library.contracts.getRiskyPools()
             }
@@ -482,7 +482,7 @@ function Wallets({
           data: formFields[enumSlots[slot]](
             {
               amount: data.balance,
-              expiry: expiries[0].timestamp,
+              expiry: expiries[0].name,
               strike: '0',
             },
             {

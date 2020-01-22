@@ -83,7 +83,7 @@ export default function Pools({
 
   const fetchPools = () => {
     if (riskFree) {
-      library.contracts.fetchRiskFreePools()
+      library.contracts.getRiskFreePools()
     } else {
       library.contracts.getRiskyPools()
     }
@@ -95,7 +95,7 @@ export default function Pools({
       case 'contribute': {
         const { amount } = form
         library.contracts
-          .onContribute(poolId, amount, { riskFree: !riskFree })
+          .onContribute(poolId, amount, { riskFree })
           .then(() => {
             fetchPools()
             library.contracts.getBalances()
@@ -218,7 +218,8 @@ export default function Pools({
     {
       label: 'Total Contribution',
       key: '',
-      access: ({ currency, totalContributions: val }) => `${val.toFixed(4)} ${currency}`,
+      access: ({ currency, totalContributions: val }) =>
+        `${val.toFixed(4)} ${currency}`,
     },
     {
       label: 'Utilization',

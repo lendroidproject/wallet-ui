@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import Wallets from '~/components/Wallets'
 import PoolOperator from '~/components/PoolOperator'
 import Pools from '~/components/Pools'
+import Loans from '~/components/Loans'
 
 import tokens from '~/assets/contracts.js'
 
@@ -129,8 +130,8 @@ function Home() {
             {active === 0 && <Wallets library={library} {...supports} />}
             {active === 1 && <Pools riskFree library={library} {...supports} />}
             {active === 2 && <Pools library={library} {...supports} />}
+            {active === 3 && <Loans library={library} {...supports} />}
             {active === 4 && <PoolOperator library={library} {...supports} />}
-            {[3].includes(active) && <p>Coming soon...</p>}
           </Content>
         </Wrapper>
       ) : (

@@ -25,7 +25,16 @@ const Wrapper = styled.div`
   }
 `
 
-function Table({ headers, data = [], sort, actions, onAction }) {
+function Table({
+  headers,
+  data = [],
+  sort,
+  actions,
+  onAction,
+  selectable,
+  selection,
+  onSelect,
+}) {
   const addCommas = value => {
     return (value + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,')
   }
@@ -51,6 +60,7 @@ function Table({ headers, data = [], sort, actions, onAction }) {
       <table cellPadding="0" cellSpacing="0" border="0">
         <thead>
           <tr>
+            {selectable && <th />}
             {headers.map((h, hIndex) => (
               <th key={hIndex} style={h.style}>
                 {h.label}
@@ -63,6 +73,21 @@ function Table({ headers, data = [], sort, actions, onAction }) {
           {(sort ? data.sort(sort) : data).map((d, dIndex) => {
             return (
               <tr key={dIndex}>
+                {selectable && (
+                  <th>
+                    <input
+                      type="checkbox"
+                      checked={selection === dIndex + 1}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          onSelect(dIndex + 1)
+                        } else {
+                          onSelect(0)
+                        }
+                      }}
+                    />
+                  </th>
+                )}
                 {headers.map((h, hIndex) => (
                   <td key={hIndex} style={h.style}>
                     {getDisplayData(d, h)}
@@ -82,7 +107,10 @@ function Table({ headers, data = [], sort, actions, onAction }) {
           })}
           {data.length === 0 && (
             <tr>
-              <td colSpan={headers.length + 1} style={{ textAlign: 'center' }}>
+              <td
+                colSpan={headers.length + (selectable ? 2 : 1)}
+                style={{ textAlign: 'center' }}
+              >
                 No Data
               </td>
             </tr>

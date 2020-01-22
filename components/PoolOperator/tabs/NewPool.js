@@ -89,7 +89,7 @@ function NewPool({ library, poolNames }) {
       .then(() => {
         console.log('Pool Created')
         if (form.riskFree) {
-          library.contracts.fetchRiskFreePools()
+          library.contracts.getRiskFreePools()
         } else {
           library.contracts.getRiskyPools()
         }

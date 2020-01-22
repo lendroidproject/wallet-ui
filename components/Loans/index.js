@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 
-import { MyPools, NewPool, RegisterPoolName } from './tabs'
+import { MyPools, NewLoan } from './tabs'
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -42,29 +42,19 @@ const Wrapper = styled.div`
 
 const tabs = [
   {
-    value: 'riskFree',
-    label: 'My Risk-Free Pools',
-    Content: props => <MyPools {...props} riskFree={true} />,
+    value: 'loans',
+    label: 'My Loans',
+    Content: props => <div>Coming soon...</div>,
   },
   {
-    value: 'risky',
-    label: 'My Risky Pools',
-    Content: props => <MyPools {...props} riskFree={false} />,
-  },
-  {
-    value: 'newPool',
-    label: 'New Pool',
-    Content: NewPool,
-  },
-  {
-    value: 'register',
-    label: 'Register Pool Name',
-    Content: RegisterPoolName,
+    value: 'newLoan',
+    label: 'New Loan',
+    Content: NewLoan,
   },
 ]
 
-function PoolOperator({ library, ...props }) {
-  const [active, setActive] = useState('riskFree')
+export default function({ library, ...props }) {
+  const [active, setActive] = useState('newLoan')
 
   return (
     <Wrapper>
@@ -88,5 +78,3 @@ function PoolOperator({ library, ...props }) {
     </Wrapper>
   )
 }
-
-export default PoolOperator
