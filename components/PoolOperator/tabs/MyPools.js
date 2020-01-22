@@ -268,7 +268,6 @@ export default function MyPools({
         break
       }
       case 'increaseCapacity': {
-        console.log(poolId, value, options)
         library.contracts.onIncreaseCapacity(poolId, value, options).then(() => {
           fetchPools()
         })
