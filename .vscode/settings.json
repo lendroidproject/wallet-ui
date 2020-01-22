@@ -1,3 +1,6 @@
 {
-  "prettier.printWidth": 82
+  "prettier.printWidth": 82,
+  "files.exclude": {
+    "**/node_modules": true
+  }
 }
