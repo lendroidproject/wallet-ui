@@ -5,33 +5,44 @@ import { MyPools, NewPool, RegisterPoolName } from './tabs'
 
 const Wrapper = styled.div`
   .accordion {
-    background-color: #eee;
     color: #444;
-    cursor: pointer;
-    padding: 18px;
+    padding: 24px 28px 16px;
     width: 100%;
     border: none;
     text-align: left;
     outline: none;
-    font-size: 15px;
-    transition: 0.4s;
-  }
 
-  .active,
-  .accordion:hover {
-    background-color: #ccc;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 25px;
+    color: #12161e;
+
+    display: flex;
+    align-items: center;
+
+    span {
+      font-size: 12px;
+      line-height: 18px;
+      color: #808080;
+      text-transform: capitalize;
+      font-weight: normal;
+    }
+
+    .icon {
+      background: #ffffff;
+      box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
+      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+    }
   }
 
   .panel {
-    display: none;
-    background-color: white;
-    overflow: hidden;
-    padding: 15px;
-    text-align: center;
-
-    &.active {
-      display: block;
-    }
+    padding: 0 28px;
   }
 `
 
@@ -66,12 +77,12 @@ function PoolOperator({ library, ...props }) {
       {library.contracts ? (
         tabs.map(({ value, label, Content }) => (
           <div key={value}>
-            <button
+            <div
               className={`accordion ${active === value ? 'active' : ''}`}
               onClick={() => setActive(value)}
             >
               {label}
-            </button>
+            </div>
             <div className={`panel ${active === value ? 'active' : ''}`}>
               <Content library={library} {...props} />
             </div>

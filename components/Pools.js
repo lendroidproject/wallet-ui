@@ -5,7 +5,6 @@ import Modal from '~/components/common/Modal'
 
 const Wrapper = styled.div`
   text-align: left;
-  padding: 15px;
 `
 
 const WithdrawalRate = styled.div`

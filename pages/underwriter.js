@@ -18,7 +18,9 @@ export default connect(state => state)(function(props) {
   }
 
   return library ? (
-    <Pools library={library} {...supports} />
+    <div style={{ padding: 28 }}>
+      <Pools library={library} {...supports} />
+    </div>
   ) : (
     <div
       className="loading"
