@@ -1,14 +1,11 @@
-import { useEffect, useState } from 'react'
-import Head from 'next/head'
-import { Lendroid } from 'lendroid-protocol'
+import { useState } from 'react'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 import Wallets from '~/components/Wallets'
 import PoolOperator from '~/components/PoolOperator'
 import Pools from '~/components/Pools'
 import Loans from '~/components/Loans'
-
-import tokens from '~/assets/contracts.js'
 
 const Wrapper = styled.div`
   display: flex;
@@ -55,13 +52,16 @@ const tabs = [
   'Pool Operator',
 ]
 
-function Home() {
-  const [library, setLibrary] = useState(null)
+function Home(props) {
+  const {
+    library,
+    onProvider,
+    supportTokens = [],
+    poolNames = [],
+    riskFreePools = [],
+    riskyPools = [],
+  } = props
   const [active, setActive] = useState(0)
-  const [supportTokens, setSupportTokens] = useState([])
-  const [poolNames, setPoolNames] = useState([])
-  const [riskFreePools, setRiskFreePools] = useState([])
-  const [riskyPools, setRiskyPools] = useState([])
   const supports = {
     supportTokens,
     poolNames,
@@ -69,50 +69,8 @@ function Home() {
     riskyPools,
   }
 
-  const handleMessage = (event, params) => {
-    switch (event) {
-      case 'BALANCE_UPDATED':
-        setSupportTokens(params.data)
-        break
-      case 'POOL_NAME_FETCHED':
-        setPoolNames(params.data)
-        break
-      case 'RISK_FREE_POOL_FETCHED':
-        console.log(event, params)
-        setRiskFreePools(params.data)
-        break
-      case 'RISKY_POOL_FETCHED':
-        console.log(event, params)
-        setRiskyPools(params.data)
-        break
-      default:
-        console.log(event, params)
-        break
-    }
-  }
-
-  useEffect(() => {
-    const init = async () => {
-      const lib = new Lendroid({ tokens, onEvent: handleMessage })
-      setLibrary(lib)
-      await lib.enable(window.ethereum)
-    }
-    init()
-  }, [])
-
   return (
     <>
-      <div>
-        <Head>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta charSet="utf-8" />
-        </Head>
-        <style jsx global>{`
-          body {
-            margin: 0;
-          }
-        `}</style>
-      </div>
       {library ? (
         <Wrapper>
           <SideBar>
@@ -151,4 +109,4 @@ function Home() {
   )
 }
 
-export default Home
+export default connect(state => state)(Home)
