@@ -31,7 +31,6 @@ export default function({
   render,
   itemProps = {},
 }) {
-  console.log(data)
   return (
     <Wrapper>
       {data.length === 0 ? (
