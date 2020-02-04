@@ -14,10 +14,15 @@ import Transfer from '~/components/assets/images/icons/Transfer.svg'
 import TransferIcon from '~/components/assets/images/icons/TransferIcon.svg'
 import Settings from '~/components/assets/images/icons/Settings.svg'
 import Alert from '~/components/assets/images/icons/Alert.svg'
+import Arrow from '~/components/assets/images/icons/Arrow.svg'
 
 import Metamask from '~/components/assets/images/wallets/metamask.png'
 import Torus from '~/components/assets/images/wallets/torus.png'
 import Fortmatic from '~/components/assets/images/wallets/fortmatic.png'
+
+const shorter = (str, len = 18) => {
+  return `${str.substr(0, len - 4)}...${str.substr(-4)}`
+}
 
 const Wrapper = styled.div`
   display: flex;
@@ -150,6 +155,62 @@ const SideBar = styled.div`
 
 const Content = styled.div`
   width: 100%;
+
+  .content-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 14px 28px;
+
+    .type {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      padding: 7px;
+      background: #ffffff;
+      border: 1px solid #f0f0f0;
+      box-sizing: border-box;
+      margin-right: 8px;
+
+      img {
+        width: 100%;
+      }
+    }
+
+    .dropdown {
+      background: #f2f2f2;
+      border: 1px solid #ebebf1;
+      box-sizing: border-box;
+      border-radius: 4px;
+
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 21px;
+      color: #292929;
+
+      position: relative;
+      padding: 4px 32px 2px 10px;
+
+      span {
+        color: #949494;
+        text-transform: capitalize;
+      }
+
+      > img {
+        position: absolute;
+        right: 14px;
+        top: 11px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .content {
+    height: calc(100vh - 60px);
+    max-height: calc(100vh - 60px);
+    overflow: auto;
+    width: 100%;
+  }
 `
 
 const tabs = [
@@ -157,7 +218,7 @@ const tabs = [
   ['Lender', '/lender', Lend],
   ['Underwriter', '/underwriter', Underwrite],
   ['Borrower', '/borrower', Borrow],
-  ['Pool Operator', '/pool-operator', Operate],
+  ['Operator', '/pool-operator', Operate],
   ['Acuctions', '/1', Auctions],
 ]
 
@@ -167,8 +228,9 @@ const wallets = {
   fortmatic: Fortmatic,
 }
 
-export default function({ type, ...props }) {
+export default function({ type, address, ...props }) {
   const router = useRouter()
+  console.log(address)
 
   return (
     <Wrapper>
@@ -221,7 +283,18 @@ export default function({ type, ...props }) {
         </ul>
       </SideBar>
       <Content>
-        <div {...props} />
+        <div className="content-header">
+          <div className="type">
+            <img src={wallets[type]} />
+          </div>
+          <div className="dropdown">
+            <div className="address">
+              {shorter(address)} <span>({type})</span>
+            </div>
+            <img src={Arrow} />
+          </div>
+        </div>
+        <div className="content" {...props} />
       </Content>
     </Wrapper>
   )

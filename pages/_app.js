@@ -21,6 +21,7 @@ class WalletApp extends App {
 
   state = {
     lib: null,
+    address: '',
   }
 
   static async getInitialProps({ Component, ctx }) {
@@ -34,6 +35,9 @@ class WalletApp extends App {
     const handleMessage = (event, params) => {
       const { store } = this.props
       console.log('Library: ', event, params)
+      if (this.library.address !== this.state.address) {
+        this.setState({ address: this.library.address })
+      }
       store.dispatch({
         type: event,
         payload: params && params.data,
@@ -89,7 +93,7 @@ class WalletApp extends App {
   render() {
     const {
       props: { Component, pageProps, store },
-      state: { lib: library, type = 'metamask' },
+      state: { lib: library, type = 'metamask', address },
     } = this
 
     return (
@@ -124,10 +128,11 @@ class WalletApp extends App {
           />
         </Head>
         <ThemeProvider theme={theme}>
-          <Layout type={type}>
+          <Layout type={type} address={address}>
             <Provider store={store}>
               <Component
                 {...pageProps}
+                type={type}
                 library={library}
                 onProvider={this.handleProvider.bind(this)}
               />

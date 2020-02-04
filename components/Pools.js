@@ -5,10 +5,6 @@ import Modal from '~/components/common/Modal'
 
 const Wrapper = styled.div`
   text-align: left;
-  height: 100vh;
-  max-height: 100vh;
-  overflow: auto;
-  width: 100%;
   padding: 15px;
 `
 

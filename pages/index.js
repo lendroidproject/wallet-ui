@@ -3,6 +3,7 @@ import Wallets from '~/components/Wallets'
 
 export default connect(state => state)(function(props) {
   const {
+    type,
     library,
     onProvider,
     supportTokens = [],
@@ -18,7 +19,7 @@ export default connect(state => state)(function(props) {
   }
 
   return library ? (
-    <Wallets library={library} {...supports} />
+    <Wallets type={type} library={library} {...supports} />
   ) : (
     <div
       className="loading"

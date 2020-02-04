@@ -3,24 +3,32 @@ import styled from 'styled-components'
 const Wrapper = styled.div`
   table {
     width: 100%;
-    text-align: center;
+    text-align: left;
+
+    background: #ffffff;
+    border: 1px solid #d8d8d8;
+    box-sizing: border-box;
+    border-radius: 4px;
 
     thead tr th {
-      background: lightgrey;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 18px;
+      color: #949494;
     }
 
-    tbody tr:nth-child(even) td {
-      background: lightgrey;
+    th {
+      padding: 7px 16px;
+      border-bottom: 1px solid #D8D8D8;
     }
 
-    tr th:last-child,
-    tr td:last-child {
-      text-align: right;
-    }
-
-    th,
     td {
-      padding: 10px;
+      padding: 9px 16px;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 21px;
+      color: #212121;
+      border-top: 1px solid rgba(216, 216, 216, 0.3);
     }
   }
 `
@@ -66,7 +74,7 @@ function Table({
                 {h.label}
               </th>
             ))}
-            <th>Actions</th>
+            {actions && actions.lenght && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -93,15 +101,17 @@ function Table({
                     {getDisplayData(d, h)}
                   </td>
                 ))}
-                <td>
-                  {actions
-                    .filter(({ visible }) => !visible || visible(d))
-                    .map(({ label, slot }) => (
-                      <button key={slot} onClick={() => onAction(slot, d)}>
-                        {label}
-                      </button>
-                    ))}
-                </td>
+                {actions && actions.lenght && (
+                  <td>
+                    {actions
+                      .filter(({ visible }) => !visible || visible(d))
+                      .map(({ label, slot }) => (
+                        <button key={slot} onClick={() => onAction(slot, d)}>
+                          {label}
+                        </button>
+                      ))}
+                  </td>
+                )}
               </tr>
             )
           })}

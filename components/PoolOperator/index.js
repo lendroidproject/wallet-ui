@@ -4,11 +4,6 @@ import styled from 'styled-components'
 import { MyPools, NewPool, RegisterPoolName } from './tabs'
 
 const Wrapper = styled.div`
-  height: 100vh;
-  max-height: 100vh;
-  overflow: auto;
-  width: 100%;
-
   .accordion {
     background-color: #eee;
     color: #444;

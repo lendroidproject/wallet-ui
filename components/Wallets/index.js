@@ -1,70 +1,60 @@
 import { useState } from 'react'
 import styled from 'styled-components'
+import List from '~/components/common/List'
 import Table from '~/components/common/Table'
 import Modal from '~/components/common/Modal'
 
-const Wrapper = styled.div`
-  height: 100vh;
-  max-height: 100vh;
-  overflow: auto;
-  width: 100%;
+import BalanceItem from './components/BalanceItem'
+import WrappedItem from './components/WrappedItem'
 
+import WalletBalance from '~/components/assets/images/icons/WalletBalance.svg'
+import Wrapped from '~/components/assets/images/icons/Wrapped.svg'
+import SUFITokens from '~/components/assets/images/icons/SUFI_Tokens.svg'
+import HarbourTokens from '~/components/assets/images/icons/Harbour_Tokens.svg'
+import HighWaterTokens from '~/components/assets/images/icons/HighWater_Tokens.svg'
+
+const Wrapper = styled.div`
   .accordion {
-    background-color: #eee;
     color: #444;
-    cursor: pointer;
-    padding: 18px;
+    padding: 24px 28px 16px;
     width: 100%;
     border: none;
     text-align: left;
     outline: none;
-    font-size: 15px;
-    transition: 0.4s;
-  }
 
-  .active,
-  .accordion:hover {
-    background-color: #ccc;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 25px;
+    color: #12161e;
+
+    display: flex;
+    align-items: center;
+
+    span {
+      font-size: 12px;
+      line-height: 18px;
+      color: #808080;
+      text-transform: capitalize;
+      font-weight: normal;
+    }
+
+    .icon {
+      background: #ffffff;
+      box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
+      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+    }
   }
 
   .panel {
-    display: none;
-    background-color: white;
-    overflow: hidden;
-    padding: 15px;
-    text-align: center;
-
-    &.active {
-      display: block;
-    }
+    padding: 0 28px;
   }
 `
-
-const tabs = [
-  {
-    value: 'tokens',
-    label: 'Tokens',
-    filter: ({ token }) => !token.includes('_'),
-  },
-  {
-    value: 'wrappedTokens',
-    label: 'Wrapped Tokens',
-    filter: ({ token }) => token.includes('L_'),
-  },
-  {
-    value: 'sufiTokens',
-    label: 'SUFI Tokens',
-    filter: ({ token, balance }) =>
-      (token.includes('S_') ||
-        token.includes('F_') ||
-        token.includes('U_') ||
-        token.includes('I_')) &&
-      balance >= 0,
-    sort: ({ token: t1 }, { token: t2 }) =>
-      Number(t1.split('_')[2]) - Number(t2.split('_')[2]),
-  },
-  { value: 'poolshareTokens', label: 'Poolshare Tokens' },
-]
 
 const headers = {
   tokens: [
@@ -134,7 +124,7 @@ const headers = {
       style: { textAlign: 'left' },
     },
     {
-      label: 'Balance',
+      label: 'Token Balance',
       key: 'balance',
       precision: 3,
     },
@@ -325,15 +315,16 @@ const formFields = {
   }),
 }
 
-function Wallets({
+export default function({
+  type,
   library,
   supportTokens,
   riskFreePools = [],
   riskyPools = [],
 }) {
   const { expiries } = library.contracts || {}
-  const [active, setActive] = useState('tokens')
   const [modal, setModal] = useState(null)
+  const [selection, setSelection] = useState({})
   const originTokens = supportTokens
     .filter(({ token }) => !token.includes('_'))
     .map(({ token }) => token)
@@ -348,6 +339,71 @@ function Wallets({
       id,
       ...poolShareToken,
     })),
+  ]
+
+  const tabs = [
+    {
+      value: 'tokens',
+      label: (
+        <>
+          <div className="icon">
+            <img src={WalletBalance} />
+          </div>
+          Wallet Balance&nbsp;<span>({type})</span>
+        </>
+      ),
+      filter: ({ token }) => !token.includes('_'),
+      render: BalanceItem,
+    },
+    {
+      value: 'wrappedTokens',
+      label: (
+        <>
+          <div className="icon">
+            <img src={Wrapped} />
+          </div>
+          Wrapped Tokens
+        </>
+      ),
+      filter: ({ token }) => token.includes('L_'),
+      render: WrappedItem,
+      itemProps: {
+        style: {
+          borderWidth: 0,
+        },
+      },
+    },
+    {
+      value: 'sufiTokens',
+      label: (
+        <>
+          <div className="icon">
+            <img src={SUFITokens} />
+          </div>
+          SUFI Tokens
+        </>
+      ),
+      filter: ({ token, balance }) =>
+        (token.includes('S_') ||
+          token.includes('F_') ||
+          token.includes('U_') ||
+          token.includes('I_')) &&
+        balance >= 0,
+      sort: ({ token: t1 }, { token: t2 }) =>
+        Number(t1.split('_')[2]) - Number(t2.split('_')[2]),
+    },
+    {
+      value: 'poolshareTokens',
+      label: (
+        <>
+          <div className="icon">
+            <img src={HarbourTokens} />
+          </div>
+          Poolshare Tokens
+        </>
+      ),
+      type: 'Table',
+    },
   ]
 
   const handleModal = (form, callback) => {
@@ -564,28 +620,45 @@ function Wallets({
 
   return (
     <Wrapper>
-      {tabs.map(({ value, label, filter, sort }) => {
-        const data = value === 'poolshareTokens' ? poolShareTokens : supportTokens
-        return (
-          <div key={value}>
-            <button
-              className={`accordion ${active === value ? 'active' : ''}`}
-              onClick={() => setActive(value)}
-            >
-              {label}
-            </button>
-            <div className={`panel ${active === value ? 'active' : ''}`}>
-              <Table
-                headers={headers[value] || []}
-                data={filter ? data.filter(filter) : data}
-                sort={sort}
-                actions={actions[value] || []}
-                onAction={(slot, data) => handleAction(value, slot, data)}
-              />
+      {tabs.map(
+        ({ type = 'List', value, label, filter, sort, render, itemProps }) => {
+          const data =
+            value === 'poolshareTokens' ? poolShareTokens : supportTokens
+          const selectProps = {
+            selection: selection[value],
+            onSelect: idx => setSelection({ ...selection, [value]: idx }),
+          }
+          return (
+            <div key={value}>
+              <div className={`accordion`}>{label}</div>
+              <div className={`panel`}>
+                {type === 'List' && (
+                  <List
+                    headers={headers[value] || []}
+                    data={filter ? data.filter(filter) : data}
+                    sort={sort}
+                    actions={actions[value] || []}
+                    onAction={(slot, data) => handleAction(value, slot, data)}
+                    render={render || (() => <div>test</div>)}
+                    selectable
+                    itemProps={itemProps}
+                    {...selectProps}
+                  />
+                )}
+                {type === 'Table' && (
+                  <Table
+                    headers={headers[value] || []}
+                    data={filter ? data.filter(filter) : data}
+                    sort={sort}
+                    // actions={actions[value] || []}
+                    onAction={(slot, data) => handleAction(value, slot, data)}
+                  />
+                )}
+              </div>
             </div>
-          </div>
-        )
-      })}
+          )
+        }
+      )}
       {!!modal && (
         <Modal
           title={modal.title || 'Input Fields'}
@@ -597,5 +670,3 @@ function Wallets({
     </Wrapper>
   )
 }
-
-export default Wallets
