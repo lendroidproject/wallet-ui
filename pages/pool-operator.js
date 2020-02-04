@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import Wallets from '~/components/Wallets'
+import PoolOperator from '~/components/PoolOperator'
 
 export default connect(state => state)(function(props) {
   const {
@@ -18,7 +18,7 @@ export default connect(state => state)(function(props) {
   }
 
   return library ? (
-    <Wallets library={library} {...supports} />
+    <PoolOperator library={library} {...supports} />
   ) : (
     <div
       className="loading"

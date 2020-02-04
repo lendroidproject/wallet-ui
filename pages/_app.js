@@ -1,6 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
 import App from 'next/app'
+import { ThemeProvider } from 'styled-components'
 
 import { Provider } from 'react-redux'
 import withRedux from 'next-redux-wrapper'
@@ -8,6 +9,12 @@ import configureStore from '~/store'
 
 import { Lendroid } from 'lendroid-protocol'
 import tokens from '~/assets/contracts.js'
+
+import Layout from '~/layouts'
+
+const theme = {
+  primary: 'default',
+}
 
 class WalletApp extends App {
   library = null
@@ -38,11 +45,10 @@ class WalletApp extends App {
       tokens,
       onEvent: handleMessage,
     })
-    this.library.enable(window.ethereum)
-    this.setState({ lib: this.library, metamask: window.ethereum })
+    this.setState({ lib: this.library }, () => this.handleProvider())
   }
 
-  async handleProvider(type) {
+  async handleProvider(type = 'metamask') {
     if (this.state.torusEmbed) {
       if (type === 'torus') {
         this.state.torusEmbed.showTorusButton()
@@ -83,7 +89,7 @@ class WalletApp extends App {
   render() {
     const {
       props: { Component, pageProps, store },
-      state: { lib: library },
+      state: { lib: library, type = 'metamask' },
     } = this
 
     return (
@@ -106,21 +112,28 @@ class WalletApp extends App {
               }}
             />
           )}
-        </Head>
-        <div>
-          <style jsx global>{`
-            body {
-              margin: 0;
-            }
-          `}</style>
-        </div>
-        <Provider store={store}>
-          <Component
-            {...pageProps}
-            library={library}
-            onProvider={this.handleProvider.bind(this)}
+          <link
+            href="https://necolas.github.io/normalize.css/latest/normalize.css"
+            rel="stylesheet"
+            type="text/css"
           />
-        </Provider>
+          <link
+            href="https://fonts.googleapis.com/css?family=Overpass"
+            rel="stylesheet"
+            type="text/css"
+          />
+        </Head>
+        <ThemeProvider theme={theme}>
+          <Layout type={type}>
+            <Provider store={store}>
+              <Component
+                {...pageProps}
+                library={library}
+                onProvider={this.handleProvider.bind(this)}
+              />
+            </Provider>
+          </Layout>
+        </ThemeProvider>
       </>
     )
   }
