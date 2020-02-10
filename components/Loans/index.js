@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 
-import Pools from '~/components/Pools'
-import { MyPools, NewLoan } from './tabs'
+import { MyLoans, NewLoan } from './tabs'
 
 const Wrapper = styled.div`
   .accordion {
@@ -51,7 +50,7 @@ const tabs = [
   {
     value: 'loans',
     label: 'My Loans',
-    Content: Pools,
+    Content: MyLoans,
   },
   {
     value: 'newLoan',

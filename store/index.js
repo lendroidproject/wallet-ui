@@ -10,6 +10,8 @@ const reducer = (state, action) => {
       return { ...state, riskFreePools: action.payload }
     case 'RISKY_POOL_FETCHED':
       return { ...state, riskyPools: action.payload }
+    case 'POSITION_FETCHED':
+      return { ...state, positions: action.payload }
     default:
       return state
   }
