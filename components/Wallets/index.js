@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import styled from 'styled-components'
+import Accordion from '~/components/common/Accordion'
 import List from '~/components/common/List'
 import Table from '~/components/common/Table'
 import Modal from '~/components/common/Modal'
@@ -13,49 +13,6 @@ import Wrapped from '~/components/assets/images/icons/Wrapped.svg'
 import SUFITokens from '~/components/assets/images/icons/SUFI_Tokens.svg'
 import HarbourTokens from '~/components/assets/images/icons/Harbour_Tokens.svg'
 import HighWaterTokens from '~/components/assets/images/icons/HighWater_Tokens.svg'
-
-const Wrapper = styled.div`
-  .accordion {
-    color: #444;
-    padding: 24px 28px 16px;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
-
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 25px;
-    color: #12161e;
-
-    display: flex;
-    align-items: center;
-
-    span {
-      font-size: 12px;
-      line-height: 18px;
-      color: #808080;
-      text-transform: capitalize;
-      font-weight: normal;
-    }
-
-    .icon {
-      background: #ffffff;
-      box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
-      border-radius: 10px;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 8px;
-    }
-  }
-
-  .panel {
-    padding: 0 28px;
-  }
-`
 
 const headers = {
   tokens: [
@@ -139,31 +96,11 @@ const actions = {
       slot: 'transfer',
       visible: ({ balance, allowance }) => Number(balance) && Number(allowance),
     },
-    {
-      label: 'Wrap',
-      slot: 'wrap',
-      visible: ({ balance, allowance }) => Number(balance) && Number(allowance),
-    },
-    {
-      label: 'Unlock',
-      slot: 'wrap',
-      visible: ({ allowance }) => !Number(allowance),
-    },
   ],
   wrappedTokens: [
     {
       label: 'Transfer',
       slot: 'transfer',
-      visible: ({ balance }) => Number(balance),
-    },
-    {
-      label: 'Unwrap',
-      slot: 'unwrap',
-      visible: ({ balance }) => Number(balance),
-    },
-    {
-      label: 'Split',
-      slot: 'split',
       visible: ({ balance }) => Number(balance),
     },
     {
@@ -180,11 +117,6 @@ const actions = {
     {
       label: 'Borrow',
       slot: 'borrow',
-    },
-    {
-      label: 'Fuse',
-      slot: 'fuse',
-      visible: ({ balance }) => Number(balance),
     },
     {
       label: 'Exercise',
@@ -327,9 +259,6 @@ export default function({
 }) {
   const { expiries } = library.contracts || {}
   const [modal, setModal] = useState(null)
-  const originTokens = supportTokens
-    .filter(({ token }) => !token.includes('_'))
-    .map(({ token }) => token)
   const poolShareTokens = [
     ...riskFreePools.map(({ id, poolShareToken }) => ({
       riskFree: true,
@@ -532,7 +461,7 @@ export default function({
   }
 
   return (
-    <Wrapper>
+    <Accordion>
       {tabs.map(
         ({ type = 'List', value, label, filter, sort, render, itemProps }) => {
           const data =
@@ -596,7 +525,6 @@ export default function({
                     headers={headers[value] || []}
                     data={filter ? data.filter(filter) : data}
                     sort={sort}
-                    actions={actions[value] || []}
                     render={render || (() => <div>Coming soon</div>)}
                     selectable
                     itemProps={itemProps}
@@ -626,6 +554,6 @@ export default function({
           onClose={() => setModal(null)}
         />
       )}
-    </Wrapper>
+    </Accordion>
   )
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
@@ -239,6 +239,10 @@ const wallets = {
 export default function({ type, library, address, onProvider, ...props }) {
   const router = useRouter()
   const [network, setNetwork] = useState(false)
+
+  useEffect(() => {
+    props.onPanel(null)
+  }, [router.pathname])
 
   return (
     <Wrapper>

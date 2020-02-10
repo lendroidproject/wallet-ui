@@ -198,7 +198,6 @@ function NewPool({
     switch (slot) {
       case 'purchase':
         const { id, type, marketInfo } = data
-        console.log(marketInfo)
         library.contracts.onPurchase(id, type, marketInfo).then(() => {
           console.log('Token Purchased')
           library.contracts.getRiskFreePools()

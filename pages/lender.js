@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import Loans from '~/components/Loans'
+import Pools from '~/components/Pools'
 
 export default connect(state => state)(function(props) {
   const {
@@ -17,7 +17,7 @@ export default connect(state => state)(function(props) {
   }
 
   return library ? (
-    <Loans riskFree library={library} {...supports} />
+    <Pools riskFree library={library} {...supports} />
   ) : (
     <div
       className="loading"

@@ -95,6 +95,11 @@ class WalletApp extends App {
       state: { lib: library, type = 'metamask', address, panel },
     } = this
 
+    const handlePanel = data =>
+      this.setState({
+        panel: data,
+      })
+
     return (
       <>
         <Head>
@@ -145,17 +150,14 @@ class WalletApp extends App {
               address={address}
               onProvider={this.handleProvider.bind(this)}
               panel={panel}
+              onPanel={handlePanel}
             >
               <Component
                 {...pageProps}
                 type={type}
                 library={library}
                 panel={panel}
-                onPanel={data =>
-                  this.setState({
-                    panel: data,
-                  })
-                }
+                onPanel={handlePanel}
               />
             </Layout>
           </Provider>

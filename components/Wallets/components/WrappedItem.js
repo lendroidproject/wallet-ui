@@ -69,7 +69,6 @@ const Wrapper = styled.div`
 `
 
 export default function({ token, balance, props }) {
-  console.log(token, balance)
   return (
     <Wrapper {...props}>
       <div className="bg" />
