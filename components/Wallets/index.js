@@ -412,24 +412,6 @@ export default function({
   const handleModal = (form, callback) => {
     const { token, slot } = modal
     switch (slot) {
-      case 'fuse': {
-        const { amount, expiry, underlying, strike } = form
-        library.contracts
-          .onFuse(token, {
-            amount,
-            expiry,
-            underlying,
-            strike: Number(strike),
-          })
-          .then(() => {
-            library.contracts.getBalances()
-            setModal(null)
-          })
-          .catch(() => {
-            if (callback) callback()
-          })
-        break
-      }
       case 'withdraw': {
         const { poolId, riskFree } = modal
         const { amount } = form
@@ -513,35 +495,22 @@ export default function({
         break
       }
       case 'fuse': {
-        const tokens = supportTokens.filter(
-          ({ token, balance }) =>
-            (token.includes(
-              `S_${data.token.split('_')[1]}_${data.token.split('_')[2]}`
-            ) ||
-              token.includes(
-                `F_${data.token.split('_')[1]}_${data.token.split('_')[2]}`
-              )) &&
-            Number(balance) > 0
-        )
-        let defaultData = data
-        if (!data.token.split('_')[3].replace('-', '')) {
-          defaultData = tokens[0]
-        }
-        setModal({
-          slot,
-          token: data.token,
-          data: formFields[enumSlots[slot]](
-            {
-              amount: defaultData.balance,
-              expiry: defaultData.token.split('_')[2],
-              underlying: defaultData.token.split('_')[3].replace('-', ''),
-              strike: defaultData.token.split('_')[4].replace('-', ''),
-            },
-            {
-              tokens,
-            }
-          ),
-        })
+        const { token } = data
+        const [, , expiry, underlying, strike] = token
+          .replace(/-/gi, '')
+          .split('_')
+        const { amount } = value
+        library.contracts
+          .onFuse(token, {
+            amount,
+            expiry,
+            underlying,
+            strike: Number(strike),
+          })
+          .then(() => {
+            library.contracts.getBalances()
+            callback && callback()
+          })
         break
       }
       case 'withdraw': {
@@ -577,6 +546,42 @@ export default function({
                       value,
                       token: d.token,
                       onAction: handleAction,
+                      relations: supportTokens
+                        .filter(
+                          ({ token, balance }) =>
+                            token != d.token &&
+                            ((d.token[0] !== 'F' &&
+                              token.includes(
+                                `S_${d.token.split('_')[1]}_${
+                                  d.token.split('_')[2]
+                                }`
+                              )) ||
+                              (d.token[0] !== 'F' &&
+                                token.includes(
+                                  `U_${d.token.split('_')[1]}_${
+                                    d.token.split('_')[2]
+                                  }`
+                                )) ||
+                              (d.token[0] === 'I' &&
+                                token.includes(
+                                  `F_${d.token.split('_')[1]}_${
+                                    d.token.split('_')[2]
+                                  }`
+                                )) ||
+                              (!['S', 'U'].includes(d.token[0]) &&
+                                token.includes(
+                                  `F_${d.token.split('_')[1]}_${
+                                    d.token.split('_')[2]
+                                  }`
+                                )) ||
+                              token.includes(
+                                `I_${d.token.split('_')[1]}_${
+                                  d.token.split('_')[2]
+                                }`
+                              )) &&
+                            Number(balance) > 0
+                        )
+                        .map(({ token }) => token),
                     }
                   : null
               )
@@ -595,6 +600,7 @@ export default function({
                     render={render || (() => <div>Coming soon</div>)}
                     selectable
                     itemProps={itemProps}
+                    relations={panel && panel.relations}
                     {...selectProps}
                   />
                 )}

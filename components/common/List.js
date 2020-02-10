@@ -18,6 +18,10 @@ const Wrapper = styled.div`
         box-shadow: 3px 3px 10px rgba(25, 60, 2, 0.3);
         border-radius: 4px;
       }
+
+      &.related {
+        border: 2px dashed #188881;
+      }
     }
   }
 `
@@ -31,6 +35,7 @@ export default function({
   onSelect,
   render,
   itemProps = {},
+  relations,
 }) {
   return (
     <Wrapper>
@@ -44,7 +49,11 @@ export default function({
                 {render({
                   ...d,
                   props: {
-                    className: `item ${selection === d[match] ? 'selected' : ''}`,
+                    className: `item ${
+                      selection === d[match] ? 'selected' : ''
+                    } ${
+                      relations && relations.includes(d[match]) ? 'related' : ''
+                    }`,
                     onClick: e => {
                       if (selectable && selection !== d[match]) {
                         onSelect(d)

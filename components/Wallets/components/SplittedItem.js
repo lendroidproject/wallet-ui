@@ -80,7 +80,6 @@ const Wrapper = styled.div`
 
 export default function({ token, balance, props: { expiries, ...props } }) {
   const [type, base, expiry, underlying, strike] = token.split('_')
-  console.log(expiries.match[expiry])
 
   return (
     <Wrapper {...props}>

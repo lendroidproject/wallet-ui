@@ -7,6 +7,7 @@ import Unlock from './components/Unlock'
 import Wrap from './components/Wrap'
 import Unwrap from './components/Unwrap'
 import Split from './components/Split'
+import Fuse from './components/Fuse'
 
 import info from '~/components/assets/images/icons/actions/info.svg'
 
@@ -126,6 +127,12 @@ export default connect(state => state)(props => {
       )}
       {active === 'split' && (
         <Split
+          {...contentProps}
+          supports={{ supportTokens, expiries, originTokens }}
+        />
+      )}
+      {active === 'fuse' && (
+        <Fuse
           {...contentProps}
           supports={{ supportTokens, expiries, originTokens }}
         />
