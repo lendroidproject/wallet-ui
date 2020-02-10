@@ -4,7 +4,6 @@ import Loans from '~/components/Loans'
 export default connect(state => state)(function(props) {
   const {
     library,
-    onProvider,
     supportTokens = [],
     poolNames = [],
     riskFreePools = [],

@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 import Coin from '~/components/assets/images/coins/eth.png'
+import Lock from '~/components/assets/images/icons/lock.svg'
 
 const Wrapper = styled.div`
   display: flex;
@@ -22,6 +23,12 @@ const Wrapper = styled.div`
     margin-bottom: 11px;
     display: flex;
     align-items: center;
+
+    .lock {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+    }
   }
 
   .icon {
@@ -59,6 +66,7 @@ export default function({ token, balance, allowance, props }) {
           <img src={Coin} />
         </div>
         {token}
+        {Number(allowance) === 0 && <img className="lock" src={Lock} />}
       </div>
       <div className="balance">{balance}</div>
     </Wrapper>

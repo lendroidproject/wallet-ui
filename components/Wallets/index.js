@@ -6,6 +6,7 @@ import Modal from '~/components/common/Modal'
 
 import BalanceItem from './components/BalanceItem'
 import WrappedItem from './components/WrappedItem'
+import SplittedItem from './components/SplittedItem'
 
 import WalletBalance from '~/components/assets/images/icons/WalletBalance.svg'
 import Wrapped from '~/components/assets/images/icons/Wrapped.svg'
@@ -318,13 +319,14 @@ const formFields = {
 export default function({
   type,
   library,
+  panel,
+  onPanel,
   supportTokens,
   riskFreePools = [],
   riskyPools = [],
 }) {
   const { expiries } = library.contracts || {}
   const [modal, setModal] = useState(null)
-  const [selection, setSelection] = useState({})
   const originTokens = supportTokens
     .filter(({ token }) => !token.includes('_'))
     .map(({ token }) => token)
@@ -340,6 +342,8 @@ export default function({
       ...poolShareToken,
     })),
   ]
+
+  const selection = panel && panel.token
 
   const tabs = [
     {
@@ -367,11 +371,6 @@ export default function({
       ),
       filter: ({ token }) => token.includes('L_'),
       render: WrappedItem,
-      itemProps: {
-        style: {
-          borderWidth: 0,
-        },
-      },
     },
     {
       value: 'sufiTokens',
@@ -391,6 +390,10 @@ export default function({
         balance >= 0,
       sort: ({ token: t1 }, { token: t2 }) =>
         Number(t1.split('_')[2]) - Number(t2.split('_')[2]),
+      render: SplittedItem,
+      itemProps: {
+        expiries,
+      },
     },
     {
       value: 'poolshareTokens',
@@ -409,50 +412,6 @@ export default function({
   const handleModal = (form, callback) => {
     const { token, slot } = modal
     switch (slot) {
-      case 'wrap': {
-        const { amount } = form
-        library.contracts
-          .onWrap(token, amount)
-          .then(() => {
-            library.contracts.getBalances()
-            setModal(null)
-          })
-          .catch(() => {
-            if (callback) callback()
-          })
-        break
-      }
-      case 'unwrap': {
-        const { amount } = form
-        library.contracts
-          .onUnwrap(token, amount)
-          .then(() => {
-            library.contracts.getBalances()
-            setModal(null)
-          })
-          .catch(() => {
-            if (callback) callback()
-          })
-        break
-      }
-      case 'split': {
-        const { amount, expiry, underlying, strike } = form
-        library.contracts
-          .onSplit(token, {
-            amount,
-            expiry,
-            underlying,
-            strike: Number(strike),
-          })
-          .then(() => {
-            library.contracts.getBalances(true)
-            setModal(null)
-          })
-          .catch(() => {
-            if (callback) callback()
-          })
-        break
-      }
       case 'fuse': {
         const { amount, expiry, underlying, strike } = form
         library.contracts
@@ -496,29 +455,32 @@ export default function({
     }
   }
 
-  const handleAction = async (value, slot, data) => {
+  const handleAction = async (value, slot, data, callback) => {
     switch (slot) {
-      case 'wrap': {
+      case 'wrap':
+      case 'unlock': {
         const { token } = data
         const { contracts, address, web3Utils } = library.contracts
         if (contracts[token]) {
           contracts[token].methods
             .allowance(address, contracts.CurrencyDao._address)
             .call()
-            .then(value => {
-              if (Number(value) === 0) {
+            .then(allowance => {
+              const { amount } = value
+              if (Number(allowance) === 0) {
                 contracts[token].methods
                   .approve(
                     contracts.CurrencyDao._address,
-                    web3Utils.toWei(data.balance)
+                    web3Utils.toWei(amount)
                   )
                   .send({ from: address })
-                  .then(() => library.contracts.getBalances())
+                  .then(() => {
+                    library.contracts.getBalances()
+                  })
               } else {
-                setModal({
-                  slot,
-                  token,
-                  data: formFields[enumSlots[slot]]({ amount: data.balance }),
+                library.contracts.onWrap(token, amount).then(() => {
+                  library.contracts.getBalances()
+                  callback && callback()
                 })
               }
             })
@@ -527,45 +489,27 @@ export default function({
       }
       case 'unwrap': {
         const token = data.token.replace('L_', '')
-        const { contracts, address, web3Utils } = library.contracts
-        if (contracts[token]) {
-          contracts[token].methods
-            .allowance(address, contracts.CurrencyDao._address)
-            .call()
-            .then(value => {
-              if (Number(value) === 0) {
-                contracts[token].methods
-                  .approve(contracts.CurrencyDao._address, web3Utils.toWei(1000))
-                  .send({ from: address })
-                  .then(() => library.contracts.getBalances())
-              } else {
-                setModal({
-                  slot,
-                  token,
-                  data: formFields[enumSlots[slot]]({ amount: data.balance }),
-                })
-              }
-            })
-        }
+        const { amount } = value
+        library.contracts.onUnwrap(token, amount).then(() => {
+          library.contracts.getBalances()
+          callback && callback()
+        })
         break
       }
       case 'split': {
         const token = data.token.replace('L_', '')
-        setModal({
-          slot,
-          token,
-          data: formFields[enumSlots[slot]](
-            {
-              amount: data.balance,
-              expiry: expiries[0].name,
-              strike: '0',
-            },
-            {
-              underlying: originTokens.filter(t => t !== token && t !== 'LST'),
-              expiries,
-            }
-          ),
-        })
+        const { type, amount, expiry, underlying, strike } = value
+        library.contracts
+          .onSplit(token, {
+            amount,
+            expiry,
+            underlying: type ? underlying : undefined,
+            strike: type ? Number(strike) : undefined,
+          })
+          .then(() => {
+            library.contracts.getBalances(true)
+            callback && callback()
+          })
         break
       }
       case 'fuse': {
@@ -625,8 +569,18 @@ export default function({
           const data =
             value === 'poolshareTokens' ? poolShareTokens : supportTokens
           const selectProps = {
-            selection: selection[value],
-            onSelect: idx => setSelection({ ...selection, [value]: idx }),
+            selection,
+            onSelect: d => {
+              onPanel(
+                d
+                  ? {
+                      value,
+                      token: d.token,
+                      onAction: handleAction,
+                    }
+                  : null
+              )
+            },
           }
           return (
             <div key={value}>
@@ -638,8 +592,7 @@ export default function({
                     data={filter ? data.filter(filter) : data}
                     sort={sort}
                     actions={actions[value] || []}
-                    onAction={(slot, data) => handleAction(value, slot, data)}
-                    render={render || (() => <div>test</div>)}
+                    render={render || (() => <div>Coming soon</div>)}
                     selectable
                     itemProps={itemProps}
                     {...selectProps}

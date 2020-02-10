@@ -1,49 +1,35 @@
 import styled from 'styled-components'
-
 import Coin from '~/components/assets/images/coins/eth.png'
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  padding: 11px 24px;
-  min-width: 180px;
-  box-sizing: border-box;
-  box-shadow: 1px 1px 6px rgba(26, 26, 26, 0.05);
-  cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
 
-  position: relative;
+  border: 2px solid #2f8260;
+  box-shadow: 3px 3px 10px rgba(25, 60, 2, 0.3);
+  border-radius: 4px;
+  padding: 8px 14px;
 
-  &.selected {
-    border-color: #d9a547 !important;
-  }
-
-  .bg {
-    position: absolute;
-    left: -3px;
-    right: -3px;
-    top: -3px;
-    bottom: -3px;
-    z-index: -1;
-    border-radius: 4px;
-    background: linear-gradient(
-      205.54deg,
-      #53dbff 11.72%,
-      #57de87 58.97%,
-      #686868 85.98%
-    );
-  }
+  margin-bottom: 32px;
 
   .name {
     font-size: 12px;
     line-height: 18px;
     color: #6d6d6d;
-    margin-bottom: 11px;
     display: flex;
     align-items: center;
+
+    .lock {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+    }
   }
 
   .icon {
     background: #ffffff;
+    border: 1px solid #8c8c8c;
     box-sizing: border-box;
     border-radius: 13px;
     width: 26px;
@@ -60,7 +46,7 @@ const Wrapper = styled.div`
     }
   }
 
-  .balance {
+  .amount {
     font-weight: bold;
     font-size: 22px;
     line-height: 27px;
@@ -68,18 +54,16 @@ const Wrapper = styled.div`
   }
 `
 
-export default function({ token, balance, props }) {
-  console.log(token, balance)
+export default ({ token, balance }) => {
   return (
-    <Wrapper {...props}>
-      <div className="bg" />
+    <Wrapper>
       <div className="name">
         <div className="icon">
           <img src={Coin} />
         </div>
         {token.replace(/_/, '')}
       </div>
-      <div className="balance">{balance}</div>
+      <div className="amount">{balance}</div>
     </Wrapper>
   )
 }

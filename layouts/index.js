@@ -1,6 +1,10 @@
+import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
+
+import Network from '~/components/common/Network'
+import Panel from '~/components/common/Panel'
 
 import Logo from '~/components/assets/images/logo.svg'
 
@@ -34,7 +38,11 @@ const Wrapper = styled.div`
   }
 
   .loading {
-    height: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -228,9 +236,9 @@ const wallets = {
   fortmatic: Fortmatic,
 }
 
-export default function({ type, address, ...props }) {
+export default function({ type, library, address, onProvider, ...props }) {
   const router = useRouter()
-  console.log(address)
+  const [network, setNetwork] = useState(false)
 
   return (
     <Wrapper>
@@ -287,15 +295,23 @@ export default function({ type, address, ...props }) {
           <div className="type">
             <img src={wallets[type]} />
           </div>
-          <div className="dropdown">
+          <div className="dropdown" onClick={() => setNetwork(true)}>
             <div className="address">
               {shorter(address)} <span>({type})</span>
             </div>
             <img src={Arrow} />
           </div>
+          {network && (
+            <Network
+              active={type}
+              onSelect={onProvider}
+              onClose={() => setNetwork(false)}
+            />
+          )}
         </div>
         <div className="content" {...props} />
       </Content>
+      {props.panel && <Panel {...props.panel} library={library} />}
     </Wrapper>
   )
 }

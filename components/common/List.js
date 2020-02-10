@@ -27,6 +27,7 @@ export default function({
   sort,
   selectable,
   selection,
+  match = 'token',
   onSelect,
   render,
   itemProps = {},
@@ -43,12 +44,12 @@ export default function({
                 {render({
                   ...d,
                   props: {
-                    className: `item ${
-                      selection === dIndex + 1 ? 'selected' : ''
-                    }`,
+                    className: `item ${selection === d[match] ? 'selected' : ''}`,
                     onClick: e => {
-                      if (selectable && selection !== dIndex + 1) {
-                        onSelect(dIndex + 1)
+                      if (selectable && selection !== d[match]) {
+                        onSelect(d)
+                      } else {
+                        onSelect(null)
                       }
                     },
                     ...itemProps,

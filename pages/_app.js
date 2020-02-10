@@ -22,6 +22,7 @@ class WalletApp extends App {
   state = {
     lib: null,
     address: '',
+    panel: null,
   }
 
   static async getInitialProps({ Component, ctx }) {
@@ -62,6 +63,7 @@ class WalletApp extends App {
     }
 
     if (this.state[type]) {
+      this.setState({ type })
       return this.library.enable(this.state[type], type)
     }
 
@@ -72,19 +74,16 @@ class WalletApp extends App {
         await torus.init()
         await torus.login()
         this.library.enable(torus.provider, type)
-        this.setState({ torus: torus.provider, torusEmbed: torus })
+        this.setState({ torus: torus.provider, torusEmbed: torus, type })
         break
       case 'fortmatic':
         const Fortmatic = require('fortmatic')
-        const customNodeOptions = {
-          rpcUrl: 'http://localhost:8545', // your own node url
-          // chainId: 1011, // chainId of your own node
-        }
-        const fm = new Fortmatic(process.env.FORTMATCI_API_KEY, customNodeOptions)
+        const fm = new Fortmatic(process.env.FORTMATIC_API_KEY)
         web3 = new Web3(fm.getProvider())
-        this.setState({ fortmatic: fm.getProvider() })
+        this.setState({ fortmatic: fm.getProvider(), type })
         break
       default:
+        this.setState({ type })
         this.library.enable(window.ethereum, type)
         break
     }
@@ -93,7 +92,7 @@ class WalletApp extends App {
   render() {
     const {
       props: { Component, pageProps, store },
-      state: { lib: library, type = 'metamask', address },
+      state: { lib: library, type = 'metamask', address, panel },
     } = this
 
     return (
@@ -126,18 +125,40 @@ class WalletApp extends App {
             rel="stylesheet"
             type="text/css"
           />
+          <style>
+            {`
+              body {
+                display: flex;
+              }
+
+              #__next {
+                width: 100%;
+              }
+            `}
+          </style>
         </Head>
         <ThemeProvider theme={theme}>
-          <Layout type={type} address={address}>
-            <Provider store={store}>
+          <Provider store={store}>
+            <Layout
+              type={type}
+              library={library}
+              address={address}
+              onProvider={this.handleProvider.bind(this)}
+              panel={panel}
+            >
               <Component
                 {...pageProps}
                 type={type}
                 library={library}
-                onProvider={this.handleProvider.bind(this)}
+                panel={panel}
+                onPanel={data =>
+                  this.setState({
+                    panel: data,
+                  })
+                }
               />
-            </Provider>
-          </Layout>
+            </Layout>
+          </Provider>
         </ThemeProvider>
       </>
     )

@@ -5,12 +5,19 @@ export default connect(state => state)(function(props) {
   const {
     type,
     library,
-    onProvider,
+    panel,
+    onPanel,
     supportTokens = [],
     poolNames = [],
     riskFreePools = [],
     riskyPools = [],
   } = props
+  const pageProps = {
+    type,
+    library,
+    panel,
+    onPanel,
+  }
   const supports = {
     supportTokens,
     poolNames,
@@ -19,7 +26,7 @@ export default connect(state => state)(function(props) {
   }
 
   return library ? (
-    <Wallets type={type} library={library} {...supports} />
+    <Wallets {...pageProps} {...supports} />
   ) : (
     <div
       className="loading"

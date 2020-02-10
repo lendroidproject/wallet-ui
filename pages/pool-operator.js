@@ -4,7 +4,6 @@ import PoolOperator from '~/components/PoolOperator'
 export default connect(state => state)(function(props) {
   const {
     library,
-    onProvider,
     supportTokens = [],
     poolNames = [],
     riskFreePools = [],
