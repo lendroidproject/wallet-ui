@@ -33,7 +33,7 @@ const PoolName = styled.div`
   }
 `
 
-export default ({ data, onAction, expiries, ...props }) => {
+export default ({ data, onAction, expiries, supportTokens, ...props }) => {
   const {
     id,
     name: origin,
@@ -46,6 +46,10 @@ export default ({ data, onAction, expiries, ...props }) => {
     status,
   } = data
   const name = origin || `Loan ${id + 1}`
+  const token = supportTokens.find(({ token }) =>
+    token.includes(`I_${currency}_${expiry}`)
+  )
+  const balance = token ? Number(token.balance) : 0
 
   return (
     <Card {...props}>
@@ -55,9 +59,6 @@ export default ({ data, onAction, expiries, ...props }) => {
           <div className="symbol">{name.substr(0, 3).toUpperCase()}</div>
           {name}
         </PoolName>
-        <Action>
-          <img src={setting} />
-        </Action>
       </Header>
       <Content>
         <table>
@@ -77,7 +78,8 @@ export default ({ data, onAction, expiries, ...props }) => {
             <tr>
               <td>Due Date</td>
               <td className="main">
-                {expiry} - {moment.unix(expiries.match[expiry]).format('D MMM, YY')}
+                {expiry} -{' '}
+                {moment.unix(expiries.match[expiry]).format('D MMM, YY')}
               </td>
             </tr>
             {status !== 'closed' && (
@@ -90,7 +92,7 @@ export default ({ data, onAction, expiries, ...props }) => {
         </table>
       </Content>
       <Footer>
-        {status === 'active' && (
+        {status === 'active' && balance >= Number(currencyValue) && (
           <div
             className="action"
             style={{
@@ -102,13 +104,13 @@ export default ({ data, onAction, expiries, ...props }) => {
             Repay
           </div>
         )}
-        {status.includes('liquid') && (
+        {(status.includes('liquid') || status === 'active') && (
           <div
             className="action"
             style={{
               color: '#46BB9D',
             }}
-            onClick={() => onAction('offer', data)}
+            onClick={() => onAction('withdraw', data)}
           >
             <img src={withdrawEarnings} />
             Withdraw Collateral

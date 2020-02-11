@@ -11,7 +11,7 @@ import Static from '~/components/assets/images/icons/Static.svg'
 import plus from '~/components/assets/images/icons/actions/plus-circle.svg'
 
 export default function(props) {
-  const { library, positions = [] } = props
+  const { library, positions } = props
   const [mode, setMode] = useState('list')
   const [tab, setTab] = useState(0)
 

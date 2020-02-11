@@ -20,19 +20,41 @@ const Wrapper = styled.div`
   }
 `
 
-const actions = [
-]
+const actions = []
 
 const formFields = {
+  repay: defaults => ({
+    fields: [
+      {
+        key: 'amount',
+        label: 'Amount',
+        required: ({ amount }) => !!amount,
+        autoFocus: true,
+      },
+    ],
+    defaults,
+  }),
 }
 
-export default function ({ library, data }) {
+export default function({ library, data, supportTokens }) {
   const [modal, setModal] = useState(null)
   const { expiries } = library.contracts || {}
 
   const handleModal = (form, callback) => {
-    // const { positionId, slot } = modal
+    const { positionId, slot } = modal
     switch (slot) {
+      case 'repay': {
+        const { amount } = form
+        library.contracts
+          .onRepay(positionId, amount)
+          .then(() => {
+            library.contracts.getPositions()
+            setModal(null)
+          })
+          .catch(() => {
+            if (callback) callback()
+          })
+      }
       default:
         console.log(modal, form)
         break
@@ -41,6 +63,27 @@ export default function ({ library, data }) {
 
   const handleAction = async (slot, data) => {
     switch (slot) {
+      case 'repay': {
+        const { id: positionId } = data
+        setModal({
+          slot,
+          positionId,
+          title: `Repay Loan`,
+          data: formFields.repay({
+            amount: 0,
+          }),
+        })
+        break
+      }
+      case 'withdraw': {
+        const { id: positionId } = data
+        library.contracts
+          .onWithdrawCallateral(positionId)
+          .then(() => {
+            library.contracts.getPositions()
+          })
+        break
+      }
       default:
         console.log(slot, data)
         break
@@ -57,6 +100,7 @@ export default function ({ library, data }) {
             data={loan}
             onAction={handleAction}
             expiries={expiries}
+            supportTokens={supportTokens}
           />
         ))}
       </div>
