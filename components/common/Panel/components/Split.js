@@ -27,13 +27,13 @@ export default ({ data, supports, form, setForm }) => {
               className={`radio ${form.type ? '' : 'active'}`}
               onClick={() => setForm({ ...form, type: false })}
             >
-              <div className="check" />F{base} + I{base}
+              <div className="check" />I{base} + F{base}
             </div>
             <div
               className={`radio ${form.type ? 'active' : ''}`}
               onClick={() => setForm({ ...form, type: true })}
             >
-              <div className="check" />F{base} + S{base} + U{base}
+              <div className="check" />I{base} + S{base} + U{base}
             </div>
           </div>
         </div>
@@ -54,23 +54,23 @@ export default ({ data, supports, form, setForm }) => {
         <Equals />
         <div className="input-group">
           <div className="input">
-            <span>F{base}</span>
+            <span>I{base}</span>
             <input type="number" value={form.amount || 0} readOnly />
           </div>
           <div className="info">
-            Balance F{base}:{' '}
-            {Number(fToken ? fToken.balance : 0) + Number(form.amount || 0)}
+            Balance I{base}:{' '}
+            {Number(iToken ? iToken.balance : 0) + Number(form.amount || 0)}
           </div>
         </div>
         {!form.type ? (
           <div className="input-group">
             <div className="input">
-              <span>I{base}</span>
+              <span>F{base}</span>
               <input type="number" value={form.amount || 0} readOnly />
             </div>
             <div className="info">
               Balance I{base}:{' '}
-              {Number(iToken ? iToken.balance : 0) + Number(form.amount || 0)}
+              {Number(fToken ? fToken.balance : 0) + Number(form.amount || 0)}
             </div>
           </div>
         ) : (
