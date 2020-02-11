@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import styled from 'styled-components'
-
 import { connect } from 'react-redux'
+
+import Button from '~/components/common/Button'
+
 import Actions from './components/Actions'
 import Unlock from './components/Unlock'
 import Wrap from './components/Wrap'
@@ -26,19 +28,10 @@ const Wrapper = styled.div`
   position: relative;
 
   > button {
-    background: linear-gradient(122.66deg, #12265e -71.32%, #46bb9d 122.36%);
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 21px;
-    border: none;
-    color: #ffffff;
-    padding: 8px;
     position: absolute;
     bottom: 20px;
     left: 20px;
     width: calc(100% - 40px);
-    cursor: pointer;
   }
 `
 
@@ -60,7 +53,6 @@ const ActiveTitle = styled.h2`
 `
 
 const getActions = ({ value, data }) => {
-  console.log(value, data)
   switch (value) {
     case 'tokens':
       return Number(data.allowance) > 0
@@ -137,9 +129,9 @@ export default connect(state => state)(props => {
           supports={{ supportTokens, expiries, originTokens }}
         />
       )}
-      <button type="button" onClick={handleProceed}>
+      <Button type="button" onClick={handleProceed}>
         Proceed
-      </button>
+      </Button>
     </Wrapper>
   )
 })

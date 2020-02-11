@@ -3,10 +3,22 @@ import styled from 'styled-components'
 import Table from '~/components/common/Table'
 import Modal from '~/components/common/Modal'
 
+import Pool from './Pool'
 import ModalMFT from '../components/ModalMFT'
 
 const Wrapper = styled.div`
   text-align: left;
+
+  .list {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -14px;
+
+    .item {
+      margin: 14px;
+      width: 358px;
+    }
+  }
 `
 
 const WithdrawalRate = styled.div`
@@ -294,12 +306,17 @@ export default function MyPools({
 
   return (
     <Wrapper>
-      <Table
+      {/* <Table
         headers={headers}
         data={data}
         actions={actions}
         onAction={handleAction}
-      />
+      /> */}
+      <div className="list">
+        {data.map(pool => (
+          <Pool className="item" key={pool.id} data={pool} />
+        ))}
+      </div>
       {!!modal && (
         <Modal
           title="Input Fields"

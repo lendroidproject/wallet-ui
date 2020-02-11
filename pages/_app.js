@@ -134,6 +134,7 @@ class WalletApp extends App {
             {`
               body {
                 display: flex;
+                line-height: 1.5;
               }
 
               #__next {

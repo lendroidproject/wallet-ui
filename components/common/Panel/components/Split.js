@@ -95,7 +95,7 @@ export default ({ data, supports, form, setForm }) => {
               </div>
             </div>
             <div className="input-group">
-              <div className="input">
+              <div className="input select">
                 <span>Underlying</span>
                 <select
                   value={form.underlying}
@@ -125,7 +125,7 @@ export default ({ data, supports, form, setForm }) => {
           </>
         )}
         <div className="input-group">
-          <div className="input">
+          <div className="input select">
             <span>Expiry</span>
             <select
               value={form.expiry}

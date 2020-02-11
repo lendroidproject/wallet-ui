@@ -1,81 +1,37 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 
+import Form, { Row, Actions } from '~/components/common/Form'
+import Button from '~/components/common/Button'
+import { PopupBox, Success } from '~/components/common/Popup'
+
 const Wrapper = styled.div`
   width: 100%;
+`
 
-  form {
-    text-align: left;
-    max-width: 560px;
-    margin: 0 auto;
-
-    min-height: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    button {
-      padding: 10px;
-    }
+const Popup = styled.div`
+  h1 {
   }
 `
 
-const InputFields = styled.div`
-  display: flex;
-  margin-left: -10px;
-  margin-right: -10px;
-
-  > div {
-    margin: 0 10px 10px;
-  }
-`
-
-const InputField = styled.div`
-  display: flex;
-  flex-direction: ${props => (props.inline ? 'row' : 'column')};
-  width: 100%;
-  margin-bottom: 10px;
-
-  label {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-
-  input,
-  select {
-    width: 100%;
-    padding: 10px;
-
-    &[type='checkbox'] {
-      width: 20px;
-      height: 20px;
-      margin: 10px;
-      margin-left: 0;
-    }
-  }
-
-  > div {
-    display: flex;
-    align-items: center;
-  }
-`
-
-function NewPool({ library, poolNames }) {
+export default function({ onClose, library }) {
   const { balanceTokens } = library.contracts
   const currencies = balanceTokens.filter(t => t !== 'LST')
 
   const defaults = {
-    riskFree: false,
+    riskFree: 1,
     poolName: '',
+    symbol: '',
     feePercentI: 1,
     feePercentS: 1,
     currency: currencies[0],
-    onlyMe: true,
+    onlyMe: 1,
     exchangeRate: 50,
     expiryLimit: 90,
   }
 
   const [form, setForm] = useState(defaults)
+  const [success, setSuccess] = useState(false)
 
   const handleForm = (key, val) => {
     const newForm = { ...form, [key]: val }
@@ -87,8 +43,8 @@ function NewPool({ library, poolNames }) {
     library.contracts
       .onCreatePool(form)
       .then(() => {
-        console.log('Pool Created')
-        if (form.riskFree) {
+        setSuccess(true)
+        if (riskFree) {
           library.contracts.getRiskFreePools()
         } else {
           library.contracts.getRiskyPools()
@@ -97,137 +53,153 @@ function NewPool({ library, poolNames }) {
       .finally(() => setForm(defaults))
   }
 
+  const { riskFree } = form
+
   return (
     <Wrapper>
-      <form onSubmit={handleSubmit}>
-        <InputField>
-          <label htmlFor="riskFree">Pool Type</label>
-          <div>
-            <input
-              name="riskFree"
-              type="checkbox"
-              checked={form.riskFree}
-              onChange={e => handleForm('riskFree', e.target.checked)}
-            />
-            Risk-Free
-          </div>
-        </InputField>
-        <InputField>
-          <label htmlFor="poolName">Pool Name</label>
-          <div>
-            <select
-              value={form.poolName}
-              onChange={e => handleForm('poolName', e.target.value)}
-            >
-              <option defaultValue>Choose registered Pool Name</option>
-              {poolNames.map((name, idx) => (
-                <option value={name} key={idx}>
-                  {name}
-                </option>
-              ))}
-            </select>
-            &nbsp;<p style={{ fontSize: 18, margin: 0 }}>or</p>&nbsp;
-            <input
-              autoFocus
-              name="poolName"
-              maxLength={64}
-              placeholder="Enter Pool Name (max 64 charactors)..."
-              value={form.poolName}
-              onChange={e => handleForm('poolName', e.target.value)}
-            />
-          </div>
-        </InputField>
-        <InputFields>
-          {/* <InputField>
-            <label htmlFor="tokenSymbol">Token Symbol</label>
-            <input
-              name="tokenSymbol"
-              placeholder="Enter Token Symbol"
-              value={form.tokenSymbol}
-              onChange={e => handleForm('tokenSymbol', e.target.value)}
-            />
-          </InputField> */}
-          <InputField>
-            <label htmlFor="feePercentI">Fee Percentage per I token</label>
-            <input
-              name="feePercentI"
-              placeholder="Fee %"
-              value={form.feePercentI}
-              onChange={e => handleForm('feePercentI', e.target.value)}
-            />
-          </InputField>
-          {!form.riskFree ? (
-            <InputField>
-              <label htmlFor="feePercentS">Fee Percentage per S token</label>
+      <Form onSubmit={handleSubmit}>
+        <Row>
+          <div className="input-group">
+            <div className="input">
+              <span>Pool Name</span>
               <input
-                name="feePercentS"
+                value={form.poolName}
+                onChange={e => handleForm('poolName', e.target.value)}
+              />
+            </div>
+          </div>
+          {/* <div className="input-group">
+            <div className="input">
+              <span>Token Symbol</span>
+              <input
+                type="number"
+                value={form.symbol}
+                onChange={e => handleForm('symbol', e.target.value)}
+              />
+            </div>
+          </div> */}
+          <div className="input-group">
+            <div className="input select">
+              <span htmlFor="riskFree">PoolType Type</span>
+              <select
+                value={form.riskFree}
+                onChange={e => handleForm('riskFree', Number(e.target.value))}
+              >
+                <option value={1}>Harbour</option>
+                <option value={0}>High Water</option>
+              </select>
+            </div>
+          </div>
+        </Row>
+        <Row>
+          <div className="input-group">
+            <div className="input">
+              <span htmlFor="feePercentI">Fee Percentage per I token</span>
+              <input
+                name="feePercentI"
                 placeholder="Fee %"
-                value={form.feePercentS}
-                onChange={e => handleForm('feePercentS', e.target.value)}
+                value={form.feePercentI}
+                onChange={e => handleForm('feePercentI', e.target.value)}
               />
-            </InputField>
+            </div>
+          </div>
+          {!riskFree ? (
+            <div className="input-group">
+              <div className="input">
+                <span htmlFor="feePercentS">Fee Percentage per S token</span>
+                <input
+                  name="feePercentS"
+                  placeholder="Fee %"
+                  value={form.feePercentS}
+                  onChange={e => handleForm('feePercentS', e.target.value)}
+                />
+              </div>
+            </div>
           ) : (
-            <div />
+            <div className="input-group" />
           )}
-        </InputFields>
-        <InputFields>
-          <InputField>
-            <label htmlFor="currency">Currency</label>
-            <select
-              value={form.currency}
-              onChange={e => handleForm('currency', e.target.value)}
-            >
-              <option defaultValue>Choose Currency</option>
-              {currencies.map((token, idx) => (
-                <option value={token} key={idx}>
-                  {token}
-                </option>
-              ))}
-            </select>
-          </InputField>
-          <InputField>
-            <label htmlFor="onlyMe">Contribute Type</label>
-            <div>
-              <input
-                disabled
-                name="onlyMe"
-                type="checkbox"
-                checked={form.onlyMe}
-                onChange={e => handleForm('onlyMe', e.target.checked)}
-              />
-              Only Me
+        </Row>
+        <Row>
+          <div className="input-group">
+            <div className="input select">
+              <span htmlFor="currency">Currency</span>
+              <select
+                value={form.currency}
+                onChange={e => handleForm('currency', e.target.value)}
+              >
+                <option defaultValue>Choose Currency</option>
+                {currencies.map((token, idx) => (
+                  <option value={token} key={idx}>
+                    {token}
+                  </option>
+                ))}
+              </select>
             </div>
-          </InputField>
-        </InputFields>
-        <InputFields>
-          <InputField>
-            <label htmlFor="exchangeRate">Initial Exchange Rate</label>
-            <input
-              name="exchangeRate"
-              placeholder="Rate %"
-              value={form.exchangeRate}
-              onChange={e => handleForm('exchangeRate', e.target.value)}
-            />
-          </InputField>
-          <InputField>
-            <label htmlFor="expiryLimit">Maximum expiry limit</label>
-            <div>
-              <input
-                name="expiryLimit"
-                placeholder="..."
-                value={form.expiryLimit}
-                onChange={e => handleForm('expiryLimit', e.target.value)}
-              />
-              &nbsp;days
+          </div>
+          <div className="input-group">
+            <div className="input select">
+              <span htmlFor="onlyMe">Contribute Type</span>
+              <select
+                value={form.onlyMe}
+                onChange={e => handleForm('onlyMe', Number(e.target.value))}
+              >
+                <option value={0}>Open to all</option>
+                <option value={1}>Only Me</option>
+              </select>
             </div>
-          </InputField>
-        </InputFields>
-        <div style={{ textAlign: 'center', margin: 20 }}>
-          <button type="submit">Create Pool</button>
-        </div>
-      </form>
+          </div>
+        </Row>
+        <Row>
+          <div className="input-group">
+            <div className="input">
+              <span htmlFor="exchangeRate">Initial Exchange Rate</span>
+              <input
+                name="exchangeRate"
+                placeholder="Rate %"
+                value={form.exchangeRate}
+                onChange={e => handleForm('exchangeRate', e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="input-group">
+            <div className="input">
+              <span htmlFor="expiryLimit">Maximum expiry limit</span>
+              <div>
+                <input
+                  name="expiryLimit"
+                  placeholder="..."
+                  value={form.expiryLimit}
+                  onChange={e => handleForm('expiryLimit', e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+        </Row>
+        <Actions>
+          <Button type="submit">Create Pool</Button>
+          <Button type="button" className="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+        </Actions>
+      </Form>
+      <PopupBox>
+        {success && (
+          <Success>
+            <Popup>
+              <h1>{form.poolName}</h1>
+              <p>has been created Succesfully</p>
+              <div className="description">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quisnostrud exercitation ullamco.
+              </div>
+              <div className="actions">
+                <Button onClick={onClose}>View Pool</Button>
+              </div>
+            </Popup>
+          </Success>
+        )}
+      </PopupBox>
     </Wrapper>
   )
 }
-
-export default NewPool

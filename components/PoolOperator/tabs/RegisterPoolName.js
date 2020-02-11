@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
+import Form from '~/components/common/Form'
+
 const Wrapper = styled.div`
   width: 100%;
 
@@ -111,18 +113,20 @@ function RegisterPoolName({ library, supportTokens }) {
 
   return (
     <Wrapper>
-      <form onSubmit={handleSubmit}>
-        <InputField>
-          <label htmlFor="poolName">Pool Name</label>
-          <input
-            autoFocus
-            name="poolName"
-            maxLength={64}
-            placeholder="Enter Pool Name (max 64 charactors)..."
-            value={poolName}
-            onChange={handlePoolName}
-          />
-        </InputField>
+      <Form onSubmit={handleSubmit}>
+        <div className="input-group">
+          <div className="input">
+            <span>Pool Name</span>
+            <input
+              autoFocus
+              name="poolName"
+              maxLength={64}
+              placeholder="Enter Pool Name (max 64 charactors)..."
+              value={poolName}
+              onChange={handlePoolName}
+            />
+          </div>
+        </div>
         <p>
           LST required to stake is - {stake}{' '}
           {allowance < stake && (
@@ -136,7 +140,7 @@ function RegisterPoolName({ library, supportTokens }) {
             Register Pool Name
           </button>
         </div>
-      </form>
+      </Form>
     </Wrapper>
   )
 }

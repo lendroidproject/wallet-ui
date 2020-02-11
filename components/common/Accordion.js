@@ -3,8 +3,9 @@ import styled from 'styled-components'
 export default styled.div`
   .accordion {
     color: #444;
-    padding: 24px 28px 16px;
-    width: 100%;
+    margin: 0 28px;
+    width: auto;
+    padding: 24px 0 10px;
     border: none;
     text-align: left;
     outline: none;
@@ -16,6 +17,18 @@ export default styled.div`
 
     display: flex;
     align-items: center;
+
+    &.with-actions {
+      justify-content: space-between;
+      padding-bottom: 10px;
+      border-bottom: 1.5px solid rgba(0, 0, 0, 0.1);
+      margin-bottom: 32px;
+
+      .label {
+        display: flex;
+        align-items: center;
+      }
+    }
 
     span {
       font-size: 12px;

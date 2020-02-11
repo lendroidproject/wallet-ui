@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 import Network from '~/components/common/Network'
 import Panel from '~/components/common/Panel'
+import { PopupContainer } from '~/components/common/Popup'
 
 import Logo from '~/components/assets/images/logo.svg'
 
@@ -226,7 +227,7 @@ const tabs = [
   ['Lender', '/lender', Lend],
   ['Underwriter', '/underwriter', Underwrite],
   ['Borrower', '/borrower', Borrow],
-  ['Operator', '/pool-operator', Operate],
+  ['Operate', '/pool-operator', Operate],
   ['Acuctions', '/1', Auctions],
 ]
 
@@ -236,12 +237,12 @@ const wallets = {
   fortmatic: Fortmatic,
 }
 
-export default function({ type, library, address, onProvider, ...props }) {
+export default function({ type, library, address, onProvider, onPanel, ...props }) {
   const router = useRouter()
   const [network, setNetwork] = useState(false)
 
   useEffect(() => {
-    props.onPanel(null)
+    onPanel(null)
   }, [router.pathname])
 
   return (
@@ -316,6 +317,7 @@ export default function({ type, library, address, onProvider, ...props }) {
         <div className="content" {...props} />
       </Content>
       {props.panel && <Panel {...props.panel} library={library} />}
+      <PopupContainer />
     </Wrapper>
   )
 }

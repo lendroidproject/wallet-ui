@@ -1,98 +1,78 @@
 import { useState } from 'react'
-import styled from 'styled-components'
+
+import Accordion from '~/components/common/Accordion'
+import Tabs from '~/components/common/Tabs'
+import Button from '~/components/common/Button'
 
 import { MyPools, NewPool, RegisterPoolName } from './tabs'
 
-const Wrapper = styled.div`
-  .accordion {
-    color: #444;
-    padding: 24px 28px 16px;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
+import Static from '~/components/assets/images/icons/Static.svg'
+import plus from '~/components/assets/images/icons/actions/plus-circle.svg'
 
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 25px;
-    color: #12161e;
+export default function(props) {
+  const { library } = props
+  const [mode, setMode] = useState('list')
+  const [tab, setTab] = useState(0)
 
-    display: flex;
-    align-items: center;
-
-    span {
-      font-size: 12px;
-      line-height: 18px;
-      color: #808080;
-      text-transform: capitalize;
-      font-weight: normal;
-    }
-
-    .icon {
-      background: #ffffff;
-      box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
-      border-radius: 10px;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 8px;
-    }
-  }
-
-  .panel {
-    padding: 0 28px;
-  }
-`
-
-const tabs = [
-  {
-    value: 'riskFree',
-    label: 'My Risk-Free Pools',
-    Content: props => <MyPools {...props} riskFree={true} />,
-  },
-  {
-    value: 'risky',
-    label: 'My Risky Pools',
-    Content: props => <MyPools {...props} riskFree={false} />,
-  },
-  {
-    value: 'newPool',
-    label: 'New Pool',
-    Content: NewPool,
-  },
-  {
-    value: 'register',
-    label: 'Register Pool Name',
-    Content: RegisterPoolName,
-  },
-]
-
-function PoolOperator({ library, ...props }) {
-  const [active, setActive] = useState('riskFree')
+  const tabs = [
+    {
+      value: 0,
+      label: 'Harbour',
+    },
+    {
+      value: 1,
+      label: 'High Water',
+    },
+  ]
 
   return (
-    <Wrapper>
+    <Accordion>
       {library.contracts ? (
-        tabs.map(({ value, label, Content }) => (
-          <div key={value}>
-            <div
-              className={`accordion ${active === value ? 'active' : ''}`}
-              onClick={() => setActive(value)}
-            >
-              {label}
+        <>
+          <div className={`accordion with-actions`}>
+            <div className="label">
+              <div className="icon">
+                <img src={Static} />
+              </div>
+              My Pools
             </div>
-            <div className={`panel ${active === value ? 'active' : ''}`}>
-              <Content library={library} {...props} />
+            <div className="actions">
+              {mode !== 'create' && (
+                <Button onClick={() => setMode('create')}>
+                  <img src={plus} /> Create Pool
+                </Button>
+              )}
             </div>
           </div>
-        ))
+          <div className={`panel`}>
+            {mode === 'list' && (
+              <>
+                <Tabs>
+                  {tabs.map(({ value, label }) => (
+                    <div
+                      key={value}
+                      className={`tab ${tab === value ? 'active' : ''}`}
+                      onClick={() => setTab(value)}
+                    >
+                      {label}
+                    </div>
+                  ))}
+                </Tabs>
+                <MyPools riskFree={tab === 0} {...props} />
+              </>
+            )}
+            {mode === 'create' && (
+              <NewPool
+                riskFree={tab === 0}
+                onClose={() => setMode('list')}
+                {...props}
+              />
+            )}
+          </div>
+        </>
       ) : (
         <div className="loading">Loading...</div>
       )}
-    </Wrapper>
+    </Accordion>
   )
 }
-
-export default PoolOperator

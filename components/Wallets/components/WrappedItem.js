@@ -24,6 +24,7 @@ const Wrapper = styled.div`
     top: -3px;
     bottom: -3px;
     z-index: -1;
+    opacity: 0.6;
     border-radius: 4px;
     background: linear-gradient(
       205.54deg,
