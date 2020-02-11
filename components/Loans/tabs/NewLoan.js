@@ -121,8 +121,7 @@ function NewPool({
       .onAvailLoan({ ...form, strike })
       .then(() => {
         console.log('Loan Created')
-        library.contracts.getRiskFreePools()
-        library.contracts.getRiskyPools()
+        library.contracts.getPositions()
       })
       .finally(() => setForm(defaults))
   }

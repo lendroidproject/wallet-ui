@@ -43,7 +43,7 @@ export default ({ data, onAction, ...props }) => {
     depositeRate,
     markets: { mfts },
   } = data
-  console.log(data)
+
   return (
     <Card {...props}>
       <Header>

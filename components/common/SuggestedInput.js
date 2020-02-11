@@ -43,10 +43,10 @@ export default ({ suggests, onSuggest, ...props }) => {
             <div
               key={idx}
               onClick={e => {
-                console.log(e)
                 e.preventDefault()
                 e.stopPropagation()
                 onSuggest(s)
+                setFocus(false)
               }}
             >
               {s}

@@ -135,7 +135,7 @@ export default ({ data, supports, form, setForm }) => {
               <option defaultValue>Choose Expiry</option>
               {expiries.map(({ name, timestamp }) => (
                 <option value={name} key={name}>
-                  {moment.unix(timestamp).format('D MMM, YY')}
+                  {name} - {moment.unix(timestamp).format('D MMM, YY')}
                 </option>
               ))}
             </select>
