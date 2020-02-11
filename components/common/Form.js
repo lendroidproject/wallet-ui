@@ -61,6 +61,8 @@ export default styled.form`
     position: absolute;
     left: 18px;
     bottom: 27px;
+    z-index: 1;
+    pointer-events: none;
   }
 
   .radios {

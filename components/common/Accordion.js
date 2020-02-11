@@ -49,6 +49,15 @@ export default styled.div`
       justify-content: center;
       margin-right: 8px;
     }
+
+    .actions {
+      display: flex;
+      margin: -5px;
+
+      button {
+        margin: 5px;
+      }
+    }
   }
 
   .panel {

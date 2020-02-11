@@ -36,11 +36,17 @@ export default function(props) {
               </div>
               {mode === 'list' && 'My Pools'}
               {mode === 'create' && 'New Pool'}
+              {mode === 'register-name' && 'Register Pool Name'}
             </div>
             <div className="actions">
               {mode !== 'create' && (
                 <Button onClick={() => setMode('create')}>
                   <img src={plus} /> Create Pool
+                </Button>
+              )}
+              {mode !== 'register-name' && (
+                <Button onClick={() => setMode('register-name')}>
+                  <img src={plus} /> Register Pool Name
                 </Button>
               )}
             </div>
@@ -66,6 +72,12 @@ export default function(props) {
               <NewPool
                 riskFree={tab === 0}
                 onClose={() => setMode('list')}
+                {...props}
+              />
+            )}
+            {mode === 'register-name' && (
+              <RegisterPoolName
+                onClose={() => setMode('create')}
                 {...props}
               />
             )}

@@ -3,18 +3,16 @@ import styled from 'styled-components'
 
 import Form, { Row, Actions } from '~/components/common/Form'
 import Button from '~/components/common/Button'
+import SuggestedInput from '~/components/common/SuggestedInput'
 import { PopupBox, Success } from '~/components/common/Popup'
 
 const Wrapper = styled.div`
   width: 100%;
 `
 
-const Popup = styled.div`
-  h1 {
-  }
-`
+const Popup = styled.div``
 
-export default function({ onClose, library }) {
+export default function({ onClose, library, poolNames }) {
   const { balanceTokens } = library.contracts
   const currencies = balanceTokens.filter(t => t !== 'LST')
 
@@ -62,9 +60,11 @@ export default function({ onClose, library }) {
           <div className="input-group">
             <div className="input">
               <span>Pool Name</span>
-              <input
+              <SuggestedInput
                 value={form.poolName}
                 onChange={e => handleForm('poolName', e.target.value)}
+                suggests={poolNames.filter(n => n.toLowerCase().includes(form.poolName.toLowerCase()))}
+                onSuggest={val => handleForm('poolName', val)}
               />
             </div>
           </div>
@@ -143,7 +143,9 @@ export default function({ onClose, library }) {
                 value={form.onlyMe}
                 onChange={e => handleForm('onlyMe', Number(e.target.value))}
               >
-                <option value={0}>Open to all</option>
+                <option value={0} disabled>
+                  Open to all
+                </option>
                 <option value={1}>Only Me</option>
               </select>
             </div>

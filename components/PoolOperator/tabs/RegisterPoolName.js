@@ -1,43 +1,15 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-import Form from '~/components/common/Form'
+import Form, { Row, Actions } from '~/components/common/Form'
+import Button from '~/components/common/Button'
+import { PopupBox, Success } from '~/components/common/Popup'
 
 const Wrapper = styled.div`
   width: 100%;
-
-  form {
-    text-align: left;
-    max-width: 560px;
-    margin: 0 auto;
-
-    min-height: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    button {
-      padding: 10px;
-    }
-  }
 `
 
-const InputField = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 10px;
-
-  label {
-    margin-bottom: 10px;
-  }
-
-  input,
-  select {
-    width: 100%;
-    padding: 10px;
-  }
-`
+const Popup = styled.div``
 
 let timerId = undefined
 const throttleFunction = (func, delay, ...args) => {
@@ -58,8 +30,9 @@ function findItem(list, key, value) {
   return list.find(({ [key]: val }) => val === value)
 }
 
-function RegisterPoolName({ library, supportTokens }) {
+export default function({ onClose, library, supportTokens }) {
   const [poolName, setPoolName] = useState('')
+  const [success, setSuccess] = useState(false)
   const [stake, setStake] = useState(0)
   const [allowance, setAllowance] = useState(0)
   const dataLST = findItem(supportTokens, 'token', 'LST')
@@ -102,7 +75,7 @@ function RegisterPoolName({ library, supportTokens }) {
   const handleSubmit = e => {
     e.preventDefault()
     library.contracts.onRegisterPoolName(poolName).then(() => {
-      handlePoolName()
+      setSuccess(true)
       library.contracts.getPoolNames()
     })
   }
@@ -114,35 +87,56 @@ function RegisterPoolName({ library, supportTokens }) {
   return (
     <Wrapper>
       <Form onSubmit={handleSubmit}>
-        <div className="input-group">
-          <div className="input">
-            <span>Pool Name</span>
-            <input
-              autoFocus
-              name="poolName"
-              maxLength={64}
-              placeholder="Enter Pool Name (max 64 charactors)..."
-              value={poolName}
-              onChange={handlePoolName}
-            />
+        <Row>
+          <div className="input-group">
+            <div className="input">
+              <span>Pool Name</span>
+              <input
+                autoFocus
+                name="poolName"
+                maxLength={64}
+                placeholder="Enter Pool Name (max 64 charactors)..."
+                value={poolName}
+                onChange={handlePoolName}
+              />
+            </div>
           </div>
-        </div>
+        </Row>
         <p>
           LST required to stake is - {stake}{' '}
           {allowance < stake && (
-            <button type="button" onClick={handleUnlock}>
+            <Button type="button" className="secondary" onClick={handleUnlock}>
               Unlock LST
-            </button>
+            </Button>
           )}
         </p>
-        <div style={{ textAlign: 'center', margin: 20 }}>
-          <button type="submit" disabled={!poolName || allowance < stake}>
+        <Actions>
+          <Button type="submit" disabled={!poolName || allowance < stake}>
             Register Pool Name
-          </button>
-        </div>
+          </Button>
+          <Button type="button" className="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+        </Actions>
       </Form>
+      <PopupBox>
+        {success && (
+          <Success>
+            <Popup>
+              <h1>{poolName}</h1>
+              <p>has been registered Succesfully</p>
+              <div className="description">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quisnostrud exercitation ullamco.
+              </div>
+              <div className="actions">
+                <Button onClick={onClose}>Create Pool</Button>
+              </div>
+            </Popup>
+          </Success>
+        )}
+      </PopupBox>
     </Wrapper>
   )
 }
-
-export default RegisterPoolName
