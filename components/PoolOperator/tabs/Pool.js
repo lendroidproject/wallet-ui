@@ -30,7 +30,7 @@ const Header = styled.div`
     right: 0;
     bottom: 0;
     z-index: -1;
-    opacity: .3;
+    opacity: 0.3;
 
     background: linear-gradient(
       187.32deg,
@@ -126,7 +126,7 @@ const Action = styled.div`
   border-radius: 10px;
 `
 
-export default ({ data, ...props }) => {
+export default ({ data, onAction, ...props }) => {
   const {
     currency,
     totalContributions,
@@ -203,6 +203,7 @@ export default ({ data, ...props }) => {
           style={{
             color: '#F7931A',
           }}
+          onClick={() => onAction('offer', data)}
         >
           <img src={offerTokens} />
           Offer Tokens
@@ -212,6 +213,7 @@ export default ({ data, ...props }) => {
           style={{
             color: '#46BB9D',
           }}
+          onClick={() => onAction('offer', data)}
         >
           <img src={withdrawEarnings} />
           Withdraw Earnings

@@ -314,7 +314,12 @@ export default function MyPools({
       /> */}
       <div className="list">
         {data.map(pool => (
-          <Pool className="item" key={pool.id} data={pool} />
+          <Pool
+            className="item"
+            key={pool.id}
+            data={pool}
+            onAction={handleAction}
+          />
         ))}
       </div>
       {!!modal && (
