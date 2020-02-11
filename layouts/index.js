@@ -228,7 +228,7 @@ const tabs = [
   ['Underwriter', '/underwriter', Underwrite],
   ['Borrower', '/borrower', Borrow],
   ['Operate', '/pool-operator', Operate],
-  ['Acuctions', '/1', Auctions],
+  // ['Acuctions', '/1', Auctions],
 ]
 
 const wallets = {
@@ -274,7 +274,7 @@ export default function({ type, library, address, onProvider, onPanel, ...props 
               </Link>
             </li>
           ))}
-          <hr />
+          {/* <hr />
           <li className="item transfer">
             <Link href="/">
               <a>
@@ -285,7 +285,7 @@ export default function({ type, library, address, onProvider, onPanel, ...props 
                 </div>
               </a>
             </Link>
-          </li>
+          </li> */}
           <hr />
           <li className="action setting">
             <img src={Settings} />

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components'
+import Button from './Button'
+import Form, { Actions } from './Form'
 
 const Wrapper = styled.div`
   position: absolute;
@@ -25,33 +27,6 @@ const Content = styled.div`
   }
 `
 
-const InputField = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 10px;
-
-  label {
-    margin-bottom: 10px;
-  }
-
-  input,
-  select {
-    width: 100%;
-    padding: 10px;
-  }
-`
-
-const Footer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 30px;
-
-  button {
-    margin-left: 10px;
-  }
-`
-
 function Modal({ title, subTitle, fields, defaults, onSubmit, onClose }) {
   const [form, setForm] = useState(defaults)
   const valid = fields.every(({ required }) => !required || required(form))
@@ -65,7 +40,7 @@ function Modal({ title, subTitle, fields, defaults, onSubmit, onClose }) {
       <Content onMouseDown={e => e.stopPropagation()}>
         <h2>{title}</h2>
         {subTitle && <h4>{subTitle}</h4>}
-        <form
+        <Form
           onSubmit={e => {
             e.preventDefault()
             onSubmit(form, () => setSubmitting(false))
@@ -87,60 +62,64 @@ function Modal({ title, subTitle, fields, defaults, onSubmit, onClose }) {
               ...props
             }) =>
               hidden ? null : (
-                <InputField key={key}>
-                  <label>{label}</label>
-                  {type === 'select' ? (
-                    <select
-                      defaultValue={null}
-                      onChange={e =>
-                        onUpdate
-                          ? onUpdate(JSON.parse(e.target.value), {
-                              form,
-                              setForm,
-                            })
-                          : setForm({ ...form, [key]: e.target.value })
-                      }
-                    >
-                      {!noNoneValue && (
-                        <option defaultValue value="">
-                          None
-                        </option>
-                      )}
-                      {options.map((key, idx) => (
-                        <option
-                          key={idx}
-                          value={
-                            valueKey
-                              ? key[valueKey]
-                              : typeof key === 'object'
-                              ? JSON.stringify(key)
-                              : key
-                          }
-                        >
-                          {labelValue ? labelValue(key) : key}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      {...props}
-                      type={type}
-                      value={form[key] || ''}
-                      onChange={e => setForm({ ...form, [key]: e.target.value })}
-                    />
-                  )}
-                </InputField>
+                <div className="input-group" key={key}>
+                  <div className={`input ${type}`}>
+                    <span>{label}</span>
+                    {type === 'select' ? (
+                      <select
+                        defaultValue={null}
+                        onChange={e =>
+                          onUpdate
+                            ? onUpdate(JSON.parse(e.target.value), {
+                                form,
+                                setForm,
+                              })
+                            : setForm({ ...form, [key]: e.target.value })
+                        }
+                      >
+                        {!noNoneValue && (
+                          <option defaultValue value="">
+                            None
+                          </option>
+                        )}
+                        {options.map((key, idx) => (
+                          <option
+                            key={idx}
+                            value={
+                              valueKey
+                                ? key[valueKey]
+                                : typeof key === 'object'
+                                ? JSON.stringify(key)
+                                : key
+                            }
+                          >
+                            {labelValue ? labelValue(key) : key}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        {...props}
+                        type={type}
+                        value={form[key] || ''}
+                        onChange={e =>
+                          setForm({ ...form, [key]: e.target.value })
+                        }
+                      />
+                    )}
+                  </div>
+                </div>
               )
           )}
-          <Footer>
-            <button type="submit" disabled={!valid || submitting}>
+          <Actions>
+            <Button type="submit" disabled={!valid || submitting}>
               Submit
-            </button>
-            <button type="button" onClick={onClose}>
+            </Button>
+            <Button type="button" className="secondary" onClick={onClose}>
               Cancel
-            </button>
-          </Footer>
-        </form>
+            </Button>
+          </Actions>
+        </Form>
       </Content>
     </Wrapper>
   )
