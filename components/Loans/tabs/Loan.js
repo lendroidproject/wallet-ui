@@ -1,3 +1,4 @@
+import moment from 'moment'
 import styled from 'styled-components'
 import Card, { Header, Content, Footer, Action } from '~/components/common/Card'
 
@@ -76,7 +77,7 @@ export default ({ data, onAction, expiries, ...props }) => {
             <tr>
               <td>Due Date</td>
               <td className="main">
-                {expirty} - {moment.unix(expiries.match[expiry]).format('D MMM, YY')}
+                {expiry} - {moment.unix(expiries.match[expiry]).format('D MMM, YY')}
               </td>
             </tr>
             {status !== 'closed' && (

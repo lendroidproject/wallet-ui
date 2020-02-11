@@ -8,12 +8,14 @@ export default connect(state => state)(function(props) {
     poolNames = [],
     riskFreePools = [],
     riskyPools = [],
+    positions = [],
   } = props
   const supports = {
     supportTokens,
     poolNames,
     riskFreePools,
     riskyPools,
+    positions,
   }
 
   return library ? (
