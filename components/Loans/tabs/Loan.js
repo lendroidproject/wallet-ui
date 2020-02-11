@@ -45,7 +45,6 @@ export default ({ data, onAction, expiries, ...props }) => {
     status,
   } = data
   const name = origin || `Loan ${id + 1}`
-  console.log(data)
 
   return (
     <Card {...props}>

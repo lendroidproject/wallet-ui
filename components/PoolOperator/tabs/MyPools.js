@@ -12,6 +12,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
     margin: -14px;
+    align-items: flex-start;
 
     .item {
       margin: 14px;
