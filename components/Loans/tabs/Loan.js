@@ -76,7 +76,7 @@ export default ({ data, onAction, expiries, ...props }) => {
             <tr>
               <td>Due Date</td>
               <td className="main">
-                {moment.unix(expiries.match[expiry]).format('D MMM, YY')}
+                {expirty} - {moment.unix(expiries.match[expiry]).format('D MMM, YY')}
               </td>
             </tr>
             {status !== 'closed' && (
