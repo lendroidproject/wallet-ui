@@ -210,7 +210,7 @@ function NewPool({
                 <option defaultValue>Choose Expiry</option>
                 {expiries.map(({ name, timestamp }, idx) => (
                   <option value={name} key={idx}>
-                    {moment.unix(timestamp).format('D MMM, YY')}
+                    {name} - {moment.unix(timestamp).format('D MMM, YY')}
                   </option>
                 ))}
               </select>
