@@ -1,67 +1,38 @@
 import { useState } from 'react'
+import moment from 'moment'
 import styled from 'styled-components'
 
+import Button from '~/components/common/Button'
 import Table from '~/components/common/Table'
+import CoinLabel from '~/components/common/CoinLabel'
+import Form, { Row, Actions } from '~/components/common/Form'
+
+import search from '~/components/assets/images/icons/search.svg'
 
 const Wrapper = styled.div`
   width: 100%;
 
-  form {
-    text-align: left;
-    max-width: 560px;
-    margin: 0 auto;
-
-    min-height: 300px;
+  .tables {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    max-width: unset;
+    margin: -14px;
+    margin-top: 32px;
 
-    button {
-      padding: 10px;
-    }
-  }
-`
-
-const InputFields = styled.div`
-  display: flex;
-  margin-left: -10px;
-  margin-right: -10px;
-
-  > div {
-    margin: 0 10px 10px;
-    width: 100%;
-  }
-`
-
-const InputField = styled.div`
-  display: flex;
-  flex-direction: ${props => (props.inline ? 'row' : 'column')};
-  width: 100%;
-  margin-bottom: 10px;
-
-  label {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-
-  input,
-  select {
-    width: 100%;
-    padding: 10px;
-
-    &[type='checkbox'] {
-      width: 20px;
-      height: 20px;
-      margin: 10px;
-      margin-left: 0;
+    > div {
+      margin: 14px;
     }
   }
 
-  > div {
-    display: flex;
-    align-items: center;
+  form .input-group {
+    max-width: 186px;
+    margin: 5px 7px;
   }
 `
+
+const FormRow = styled(Row)`
+  max-width: unset;
+`
+
 const actions = [
   {
     label: 'Purchase',
@@ -159,7 +130,7 @@ function NewPool({
   const headers = {
     risky: [
       {
-        label: 'Pool',
+        label: 'Name',
         key: 'name',
       },
       {
@@ -179,7 +150,7 @@ function NewPool({
     ],
     riskFree: [
       {
-        label: 'Pool',
+        label: 'Name',
         key: 'name',
       },
       {
@@ -212,64 +183,70 @@ function NewPool({
 
   return (
     <Wrapper>
-      <form onSubmit={handleSubmit}>
-        <InputFields>
-          <InputField>
-            <label htmlFor="currency">Currency</label>
-            <select
-              value={form.currency}
-              onChange={e => handleForm('currency', e.target.value)}
-            >
-              <option defaultValue>Choose Currency</option>
-              {currencies.map((token, idx) => (
-                <option value={token} key={idx}>
-                  {token}
-                </option>
-              ))}
-            </select>
-          </InputField>
-          <InputField>
-            <label htmlFor="underlying">Collateral</label>
-            <select
-              value={form.underlying}
-              onChange={e => handleForm('underlying', e.target.value)}
-            >
-              <option defaultValue>Choose Collateral</option>
-              {currencies.map((token, idx) => (
-                <option value={token} key={idx}>
-                  {token}
-                </option>
-              ))}
-            </select>
-          </InputField>
-        </InputFields>
-        <InputFields>
-          <InputField>
-            <label htmlFor="expiry">Expiry</label>
-            <select
-              value={form.expiry}
-              onChange={e => handleForm('expiry', e.target.value)}
-            >
-              <option defaultValue>Choose Expiry</option>
-              {expiries.map(({ name }, idx) => (
-                <option value={name} key={idx}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </InputField>
-          <InputField>
-            <label htmlFor="amount">Amount</label>
-            <input
-              name="amount"
-              placeholder="Amount"
-              value={form.amount}
-              onChange={e => handleForm('amount', e.target.value)}
-            />
-          </InputField>
-        </InputFields>
-        <div style={{ textAlign: 'center', margin: 20 }}>
-          <button
+      <Form onSubmit={handleSubmit}>
+        <FormRow>
+          <div className="input-group">
+            <div className="input select">
+              <span htmlFor="currency">I want a Loan</span>
+              <select
+                value={form.currency}
+                onChange={e => handleForm('currency', e.target.value)}
+              >
+                <option defaultValue>Choose Currency</option>
+                {currencies.map((token, idx) => (
+                  <option value={token} key={idx}>
+                    {token}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="input-group">
+            <div className="input select">
+              <span htmlFor="expiry">I will Repay</span>
+              <select
+                value={form.expiry}
+                onChange={e => handleForm('expiry', e.target.value)}
+              >
+                <option defaultValue>Choose Expiry</option>
+                {expiries.map(({ name, timestamp }, idx) => (
+                  <option value={name} key={idx}>
+                    {moment.unix(timestamp).format('D MMM, YY')}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="input-group">
+            <div className="input select">
+              <span htmlFor="underlying">Collateral</span>
+              <select
+                value={form.underlying}
+                onChange={e => handleForm('underlying', e.target.value)}
+              >
+                <option defaultValue>Choose Collateral</option>
+                {currencies.map((token, idx) => (
+                  <option value={token} key={idx}>
+                    {token}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="input-group">
+            <div className="input">
+              <span htmlFor="amount">Loan Amount</span>
+              <input
+                name="amount"
+                placeholder="Amount"
+                value={form.amount}
+                onChange={e => handleForm('amount', e.target.value)}
+              />
+            </div>
+          </div>
+        </FormRow>
+        <Actions style={{ marginTop: 8, borderTop: 0 }}>
+          <Button
             type="submit"
             disabled={
               !selectedData
@@ -277,29 +254,45 @@ function NewPool({
             }
           >
             Get Loan
-          </button>
+          </Button>
+          <Button type="button">
+            <img src={search} />
+            Search
+          </Button>
+        </Actions>
+      </Form>
+      <div className="tables">
+        <div>
+          <CoinLabel>
+            <div className="icon S">S</div>
+            Purchse 'S' Tokens
+          </CoinLabel>
+          <Table
+            headers={headers.risky}
+            data={riskyData}
+            actions={actions}
+            onAction={handleAction}
+            selectable
+            selection={selection}
+            onSelect={idx => setSelection(idx)}
+          />
         </div>
-      </form>
-      <InputFields>
-        <Table
-          headers={headers.risky}
-          data={riskyData}
-          actions={actions}
-          onAction={handleAction}
-          selectable
-          selection={selection}
-          onSelect={idx => setSelection(idx)}
-        />
-        <Table
-          headers={headers.riskFree}
-          data={riskFreeData}
-          actions={actions}
-          onAction={handleAction}
-          selectable
-          selection={-selection}
-          onSelect={idx => setSelection(-idx)}
-        />
-      </InputFields>
+        <div>
+          <CoinLabel>
+            <div className="icon I">I</div>
+            Purchse 'I' Tokens
+          </CoinLabel>
+          <Table
+            headers={headers.riskFree}
+            data={riskFreeData}
+            actions={actions}
+            onAction={handleAction}
+            selectable
+            selection={-selection}
+            onSelect={idx => setSelection(-idx)}
+          />
+        </div>
+      </div>
     </Wrapper>
   )
 }

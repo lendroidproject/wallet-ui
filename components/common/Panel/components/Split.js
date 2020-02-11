@@ -1,3 +1,4 @@
+import moment from 'moment'
 import Coin from './Coin'
 import Equals from './Equals'
 import { Wrapper } from './Wrapper'
@@ -132,9 +133,9 @@ export default ({ data, supports, form, setForm }) => {
               onChange={e => setForm({ ...form, expiry: e.target.value })}
             >
               <option defaultValue>Choose Expiry</option>
-              {expiries.map(({ name }) => (
+              {expiries.map(({ name, timestamp }) => (
                 <option value={name} key={name}>
-                  {name}
+                  {moment.unix(timestamp).format('D MMM, YY')}
                 </option>
               ))}
             </select>

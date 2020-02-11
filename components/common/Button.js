@@ -26,6 +26,10 @@ const Wrapper = styled.button`
     background: transparent;
     color: #204e6f;
   }
+
+  &:disabled {
+    opacity: .7;
+  }
 `
 
 export default props => <Wrapper {...props} />

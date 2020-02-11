@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 
     th {
       padding: 7px 16px;
-      border-bottom: 1px solid #D8D8D8;
+      border-bottom: 1px solid #d8d8d8;
     }
 
     td {
@@ -29,6 +29,14 @@ const Wrapper = styled.div`
       line-height: 21px;
       color: #212121;
       border-top: 1px solid rgba(216, 216, 216, 0.3);
+
+      button {
+        background: transparent;
+        color: #12265e;
+        font-size: 12px;
+        border: 0;
+        cursor: pointer;
+      }
     }
   }
 `
@@ -39,9 +47,8 @@ function Table({
   sort,
   actions,
   onAction,
-  selectable,
   selection,
-  onSelect,
+  onSelect = () => {},
 }) {
   const addCommas = value => {
     return (value + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,')
@@ -68,40 +75,28 @@ function Table({
       <table cellPadding="0" cellSpacing="0" border="0">
         <thead>
           <tr>
-            {selectable && <th />}
             {headers.map((h, hIndex) => (
               <th key={hIndex} style={h.style}>
                 {h.label}
               </th>
             ))}
-            {actions && actions.lenght && <th>Actions</th>}
+            {actions && actions.length && <th></th>}
           </tr>
         </thead>
         <tbody>
           {(sort ? data.sort(sort) : data).map((d, dIndex) => {
             return (
-              <tr key={dIndex}>
-                {selectable && (
-                  <th>
-                    <input
-                      type="checkbox"
-                      checked={selection === dIndex + 1}
-                      onChange={e => {
-                        if (e.target.checked) {
-                          onSelect(dIndex + 1)
-                        } else {
-                          onSelect(0)
-                        }
-                      }}
-                    />
-                  </th>
-                )}
+              <tr
+                key={dIndex}
+                onClick={() => onSelect(dIndex + 1)}
+                className={selection === dIndex + 1 ? 'selected' : ''}
+              >
                 {headers.map((h, hIndex) => (
                   <td key={hIndex} style={h.style}>
                     {getDisplayData(d, h)}
                   </td>
                 ))}
-                {actions && actions.lenght && (
+                {actions && actions.length && (
                   <td>
                     {actions
                       .filter(({ visible }) => !visible || visible(d))
@@ -118,7 +113,7 @@ function Table({
           {data.length === 0 && (
             <tr>
               <td
-                colSpan={headers.length + (selectable ? 2 : 1)}
+                colSpan={headers.length + (actions && actions.length ? 1 : 0)}
                 style={{ textAlign: 'center' }}
               >
                 No Data

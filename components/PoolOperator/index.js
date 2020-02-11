@@ -34,7 +34,8 @@ export default function(props) {
               <div className="icon">
                 <img src={Static} />
               </div>
-              My Pools
+              {mode === 'list' && 'My Pools'}
+              {mode === 'create' && 'New Pool'}
             </div>
             <div className="actions">
               {mode !== 'create' && (
