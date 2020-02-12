@@ -204,7 +204,7 @@ export default function MyPools({
         break
       }
       case 'retireToken': {
-        library.contracts.onRetireToken(poolId, value, options).then(() => {
+        library.contracts.onRetireToken(poolId, options).then(() => {
           fetchPools()
         })
         break
