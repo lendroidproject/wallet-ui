@@ -78,7 +78,7 @@ export default function({ library, data, supportTokens }) {
       case 'withdraw': {
         const { id: positionId } = data
         library.contracts
-          .onWithdrawCallateral(positionId)
+          .onWithdrawCollateral(positionId)
           .then(() => {
             library.contracts.getPositions()
           })
