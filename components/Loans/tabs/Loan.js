@@ -97,10 +97,10 @@ export default ({ data, onAction, expiries, supportTokens, ...props }) => {
             className="action"
             style={{
               color: '#F7931A',
-              opacity: balance >= Number(currencyValue) ? 1 : 0.7,
+              opacity: balance > 0 ? 1 : 0.7,
             }}
             onClick={() =>
-              balance >= Number(currencyValue) ? onAction('repay', data) : null
+              balance > 0 ? onAction('repay', data) : null
             }
           >
             <img src={offerTokens} />
