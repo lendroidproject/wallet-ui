@@ -92,13 +92,16 @@ export default ({ data, onAction, expiries, supportTokens, ...props }) => {
         </table>
       </Content>
       <Footer>
-        {status === 'active' && balance >= Number(currencyValue) && (
+        {status === 'active' && (
           <div
             className="action"
             style={{
               color: '#F7931A',
+              opacity: balance >= Number(currencyValue) ? 1 : 0.7,
             }}
-            onClick={() => onAction('repay', data)}
+            onClick={() =>
+              balance >= Number(currencyValue) ? onAction('repay', data) : null
+            }
           >
             <img src={offerTokens} />
             Repay
