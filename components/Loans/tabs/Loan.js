@@ -45,7 +45,7 @@ export default ({ data, onAction, expiries, supportTokens, ...props }) => {
     repaid,
     status,
   } = data
-  const name = origin || `Loan ${id + 1}`
+  const name = origin || `Loan ${id}`
   const token = supportTokens.find(({ token }) =>
     token.includes(`I_${currency}_${expiry}`)
   )
