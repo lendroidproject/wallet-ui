@@ -104,7 +104,7 @@ export default ({ data, onAction, expiries, supportTokens, ...props }) => {
             Repay
           </div>
         )}
-        {(status.includes('liquid') || status === 'active') && (
+        {status.includes('liquid') && (
           <div
             className="action"
             style={{
