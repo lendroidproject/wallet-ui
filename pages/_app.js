@@ -79,7 +79,7 @@ class WalletApp extends App {
       case 'fortmatic':
         const Fortmatic = require('fortmatic')
         const fm = new Fortmatic(process.env.FORTMATIC_API_KEY)
-        web3 = new Web3(fm.getProvider())
+        this.library.enable(fm.getProvider(), type)
         this.setState({ fortmatic: fm.getProvider(), type })
         break
       default:
