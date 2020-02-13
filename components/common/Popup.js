@@ -55,6 +55,7 @@ const Content = styled.div`
     position: absolute;
     top: 13px;
     right: 15px;
+    cursor: pointer;
   }
 
   .content {
@@ -90,7 +91,7 @@ export const Success = ({ onClose, ...props }) => (
       <div className="bg">
         <img src={Created} />
       </div>
-      <div className="close">
+      <div className="close" onClick={onClose}>
         <img src={close} />
       </div>
       <div className="content" {...props} />

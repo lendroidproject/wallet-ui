@@ -76,6 +76,7 @@ export default function({ onClose, library, supportTokens }) {
     e.preventDefault()
     library.contracts.onRegisterPoolName(poolName).then(() => {
       setSuccess(true)
+      handlePoolName()
       library.contracts.getPoolNames()
     })
   }
@@ -121,7 +122,7 @@ export default function({ onClose, library, supportTokens }) {
       </Form>
       <PopupBox>
         {success && (
-          <Success>
+          <Success onClose={() => setSuccess(false)}>
             <Popup>
               <h1>{poolName}</h1>
               <p>has been registered Succesfully</p>

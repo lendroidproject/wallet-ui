@@ -186,7 +186,7 @@ export default function({ onClose, library, poolNames }) {
       </Form>
       <PopupBox>
         {success && (
-          <Success>
+          <Success onClick={onClose}>
             <Popup>
               <h1>{form.poolName}</h1>
               <p>has been created Succesfully</p>
