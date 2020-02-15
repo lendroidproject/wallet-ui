@@ -42,12 +42,27 @@ export default styled.form`
     font-size: 14px;
     line-height: 17px;
     color: #1c2843;
+    outline: none;
 
     padding: 27px 18px 8px;
 
     border: 1px solid #ebebf1;
     border-radius: 4px;
     width: 100%;
+
+    &:focus {
+      border-color: #2f8260;
+    }
+  }
+
+  &.error {
+    input, select {
+      border-color: #E80000;
+    }
+
+    .info {
+      color: #E80000;
+    }
   }
 
   select {

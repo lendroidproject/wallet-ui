@@ -2,7 +2,6 @@ import moment from 'moment'
 import styled from 'styled-components'
 import Card, { Header, Content, Footer, Action } from '~/components/common/Card'
 
-import setting from '~/components/assets/images/icons/setting.svg'
 import offerTokens from '~/components/assets/images/icons/offer_tokens.svg'
 import withdrawEarnings from '~/components/assets/images/icons/withdraw_earnings.svg'
 

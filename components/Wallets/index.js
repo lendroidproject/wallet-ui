@@ -455,6 +455,17 @@ export default function({
         })
         break
       }
+      case 'transfer': {
+        const { token, id } = data
+        const { amount, to } = value
+        library.contracts
+          .onTransfer({ token: token.replace(/_-/g, ''), amount, to, id })
+          .then(() => {
+            library.contracts.getBalances()
+            callback && callback()
+          })
+        break
+      }
       default:
         console.log(value, slot, data)
     }

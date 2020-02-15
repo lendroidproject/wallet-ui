@@ -10,6 +10,7 @@ import Wrap from './components/Wrap'
 import Unwrap from './components/Unwrap'
 import Split from './components/Split'
 import Fuse from './components/Fuse'
+import Transfer from './components/Transfer'
 
 import info from '~/components/assets/images/icons/actions/info.svg'
 
@@ -57,11 +58,11 @@ const getActions = ({ value, data }) => {
     case 'tokens':
       return Number(data.allowance) > 0
         ? ['unlock', 'wrap', 'transfer']
-        : ['unlock']
+        : ['unlock', 'transfer']
     case 'wrappedTokens':
-      return ['unwrap', 'split']
+      return ['unwrap', 'split', 'transfer']
     case 'sufiTokens':
-      return ['fuse']
+      return ['fuse', 'transfer']
     default:
       return []
   }
@@ -129,6 +130,7 @@ export default connect(state => state)(props => {
           supports={{ supportTokens, expiries, originTokens }}
         />
       )}
+      {active === 'transfer' && <Transfer {...contentProps} />}
       <Button type="button" onClick={handleProceed}>
         Proceed
       </Button>
