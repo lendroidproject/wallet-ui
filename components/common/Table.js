@@ -27,7 +27,6 @@ export const TableWrapper = styled.div`
 
     background: #ffffff;
     border: 1px solid #d8d8d8;
-    box-sizing: border-box;
     border-radius: 4px;
 
     thead tr th {

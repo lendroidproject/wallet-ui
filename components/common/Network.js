@@ -33,7 +33,6 @@ const List = styled.div`
 
   background: #ffffff;
   border: 1px solid #ebebf1;
-  box-sizing: border-box;
   box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.25);
 
   .item {

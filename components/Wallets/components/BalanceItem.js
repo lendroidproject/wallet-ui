@@ -11,7 +11,6 @@ const Wrapper = styled.div`
 
   background: #ffffff;
   border: 1px solid #ebebf1;
-  box-sizing: border-box;
   box-shadow: 1px 1px 6px rgba(26, 26, 26, 0.05);
   border-radius: 4px;
   cursor: pointer;
@@ -34,7 +33,6 @@ const Wrapper = styled.div`
   .icon {
     background: #ffffff;
     border: 1px solid #8c8c8c;
-    box-sizing: border-box;
     border-radius: 13px;
     width: 26px;
     height: 26px;

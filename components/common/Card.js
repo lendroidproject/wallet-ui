@@ -3,7 +3,6 @@ import styled from 'styled-components'
 export default styled.div`
   background: #ffffff;
   border: 1px solid #ebebf1;
-  box-sizing: border-box;
   box-shadow: 3px 3px 12px rgba(26, 26, 26, 0.08);
   border-radius: 4px;
 `

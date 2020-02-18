@@ -18,7 +18,6 @@ const Wrapper = styled.div`
 const Action = styled.button`
   background: #ffffff;
   border: 1px solid rgba(18, 38, 94, 0.5);
-  box-sizing: border-box;
   border-radius: 5px;
 
   width: 36px;

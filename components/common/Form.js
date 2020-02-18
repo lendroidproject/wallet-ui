@@ -100,7 +100,6 @@ export default styled.form`
         top: -1px;
 
         border: 1px solid #204e6f;
-        box-sizing: border-box;
         width: 12px;
         flex: 0 0 12px;
         height: 12px;

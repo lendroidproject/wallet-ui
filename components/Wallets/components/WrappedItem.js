@@ -7,7 +7,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   padding: 11px 24px;
   min-width: 180px;
-  box-sizing: border-box;
   box-shadow: 1px 1px 6px rgba(26, 26, 26, 0.05);
   cursor: pointer;
 
@@ -45,7 +44,6 @@ const Wrapper = styled.div`
 
   .icon {
     background: #ffffff;
-    box-sizing: border-box;
     border-radius: 13px;
     width: 26px;
     height: 26px;

@@ -12,7 +12,6 @@ const Wrapper = styled.div`
     background: #eeeeee;
     opacity: 0.8;
     border: 1px solid #ebebf1;
-    box-sizing: border-box;
     border-radius: 35px;
 
     width: 26px;

@@ -178,7 +178,6 @@ const Content = styled.div`
       padding: 7px;
       background: #ffffff;
       border: 1px solid #f0f0f0;
-      box-sizing: border-box;
       margin-right: 8px;
 
       img {
@@ -189,7 +188,6 @@ const Content = styled.div`
     .dropdown {
       background: #f2f2f2;
       border: 1px solid #ebebf1;
-      box-sizing: border-box;
       border-radius: 4px;
 
       font-weight: 600;
