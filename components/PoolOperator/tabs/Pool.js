@@ -35,7 +35,13 @@ const PoolName = styled.div`
   }
 `
 
-export default ({ data, onAction, ...props }) => {
+const MFT = styled.span`
+  cursor: pointer;
+  color: black;
+  display: block;
+`
+
+export default ({ data, onAction, onMFTAction, ...props }) => {
   const [showSetting, setShowSetting] = useState(false)
   const {
     currency,
@@ -45,7 +51,9 @@ export default ({ data, onAction, ...props }) => {
     // contributionsOpen,
     myUnwithdrawn,
     depositeRate,
-    markets: { mfts },
+    markets: {
+      mfts: [lToken, ...mfts],
+    },
   } = data
 
   const handleAction = slot => {
@@ -83,7 +91,10 @@ export default ({ data, onAction, ...props }) => {
               <div className="action disabled trigger">
                 <img src={edit} /> Edit
               </div>
-              <div className="action trigger" onClick={() => handleAction('close')}>
+              <div
+                className="action trigger"
+                onClick={() => handleAction('close')}
+              >
                 <img src={trash} /> Delete
               </div>
             </div>
@@ -126,12 +137,14 @@ export default ({ data, onAction, ...props }) => {
             <tr>
               <td>Withdrawal Rate</td>
               <td className="main">
-                {mfts
-                  .map(
-                    ({ name, rate }) =>
-                      `${rate.toFixed(2)} ${name.replace(/_/gi, '')}`
-                  )
-                  .join(', ')}
+                <span>
+                  {lToken.rate.toFixed(2)} {lToken.name.replace(/_/gi, '')}
+                </span>
+                {mfts.map(mft => (
+                  <MFT key={mft.id} onClick={() => onMFTAction(mft)}>
+                    {mft.rate.toFixed(2)} {mft.name.replace(/_/gi, '')}
+                  </MFT>
+                ))}
               </td>
             </tr>
           </tbody>

@@ -21,13 +21,6 @@ const Wrapper = styled.div`
   }
 `
 
-// const actions = [
-//   {
-//     label: 'Close Pool',
-//     slot: 'close',
-//   },
-// ]
-
 const formFields = {
   offer: (defaults, options = {}) => ({
     fields: [
@@ -223,6 +216,7 @@ export default function MyPools({
             key={pool.id}
             data={pool}
             onAction={handleAction}
+            onMFTAction={setModalMFT}
           />
         ))}
       </div>

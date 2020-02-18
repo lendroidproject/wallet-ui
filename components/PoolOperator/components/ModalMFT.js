@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import styled from 'styled-components'
+import { TableWrapper } from '~/components/common/Table'
+import Form, { Row, Actions } from '~/components/common/Form'
+import Button from '~/components/common/Button'
 
 const Wrapper = styled.div`
   position: absolute;
@@ -21,50 +24,16 @@ const Content = styled.div`
   box-shadow: 3px 3px 5px grey;
 `
 
-const Table = styled.div`
-  table {
-    width: 100%;
-    text-align: center;
-
-    thead tr th {
-      background: lightgrey;
-    }
-
-    tbody tr:nth-child(even) td {
-      background: lightgrey;
-    }
-
-    th,
-    td {
-      padding: 10px;
-    }
-  }
-`
-
-const InputField = styled.div`
-  display: flex;
-  width: 33%;
-  margin: 20px auto 0;
-  align-items: center;
-
-  label {
-    margin-right: 15px;
-  }
-
-  input,
-  select {
-    width: 100%;
-    padding: 5px 10px;
-  }
-`
-
-const Footer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 15px;
+const Footer = styled(Actions)`
+  flex-wrap: wrap;
+  margin: -5px;
 
   button {
-    margin: 0 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 8px;
+    min-width: unset;
+    margin: 5px;
   }
 `
 
@@ -109,7 +78,7 @@ function ModalMFT({ riskFree, data, onAction, onClose }) {
       onKeyDown={e => (e.keyCode === 27 ? onClose() : null)}
     >
       <Content onMouseDown={e => e.stopPropagation()}>
-        <Table>
+        <TableWrapper>
           <table>
             <thead>
               <tr>
@@ -130,24 +99,41 @@ function ModalMFT({ riskFree, data, onAction, onClose }) {
               </tr>
             </tbody>
           </table>
-        </Table>
-        <InputField>
-          <label>Value: </label>
-          <input
-            type="number"
-            value={form.value}
-            onChange={e => setForm({ value: e.target.value })}
-          />
-        </InputField>
-        {actions.length > 0 && (
-          <Footer>
-            {actions.map(({ label, slot }) => (
-              <button key={slot} onClick={() => onAction(slot, form)}>
-                {label}
-              </button>
-            ))}
-          </Footer>
-        )}
+        </TableWrapper>
+        <Form onSubmit={e => e.preventDefault()}>
+          <Row>
+            <div className="input-group">
+              <div className="input">
+                <span htmlFor="amount">Value</span>
+                <input
+                  type="number"
+                  value={form.value}
+                  onChange={e => setForm({ value: e.target.value })}
+                />
+              </div>
+            </div>
+          </Row>
+          {actions.length > 0 && (
+            <Footer
+              style={{
+                marginTop: 0,
+                borderTop: 0,
+                paddingTop: 0,
+                justifyContent: 'center',
+              }}
+            >
+              {actions.map(({ label, slot }) => (
+                <Button
+                  type="button"
+                  key={slot}
+                  onClick={() => onAction(slot, form)}
+                >
+                  {label}
+                </Button>
+              ))}
+            </Footer>
+          )}
+        </Form>
       </Content>
     </Wrapper>
   )

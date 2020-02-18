@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-const Wrapper = styled.div`
+export const TableWrapper = styled.div`
   table {
     width: 100%;
     text-align: left;
@@ -71,7 +71,7 @@ function Table({
   }
 
   return (
-    <Wrapper>
+    <TableWrapper>
       <table cellPadding="0" cellSpacing="0" border="0">
         <thead>
           <tr>
@@ -122,7 +122,7 @@ function Table({
           )}
         </tbody>
       </table>
-    </Wrapper>
+    </TableWrapper>
   )
 }
 
