@@ -54,28 +54,12 @@ class WalletApp extends App {
   }
 
   async handleProvider(type = 'metamask') {
-    if (this.state.torusEmbed) {
-      if (type === 'torus') {
-        this.state.torusEmbed.showTorusButton()
-      } else {
-        this.state.torusEmbed.hideTorusButton()
-      }
-    }
-
     if (this.state[type]) {
       this.setState({ type })
       return this.library.enable(this.state[type], type)
     }
 
     switch (type) {
-      case 'torus':
-        const { default: Torus } = require('@toruslabs/torus-embed')
-        const torus = new Torus()
-        await torus.init()
-        await torus.login()
-        this.library.enable(torus.provider, type)
-        this.setState({ torus: torus.provider, torusEmbed: torus, type })
-        break
       case 'fortmatic':
         const Fortmatic = require('fortmatic')
         const fm = new Fortmatic(process.env.FORTMATIC_API_KEY)

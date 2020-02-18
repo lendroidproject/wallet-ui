@@ -22,7 +22,6 @@ import Alert from '~/components/assets/images/icons/Alert.svg'
 import Arrow from '~/components/assets/images/icons/Arrow.svg'
 
 import Metamask from '~/components/assets/images/wallets/metamask.png'
-import Torus from '~/components/assets/images/wallets/torus.png'
 import Fortmatic from '~/components/assets/images/wallets/fortmatic.png'
 
 const shorter = (str, len = 18) => {
@@ -233,7 +232,6 @@ const tabs = [
 
 const wallets = {
   metamask: Metamask,
-  torus: Torus,
   fortmatic: Fortmatic,
 }
 

@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 import Metamask from '~/components/assets/images/wallets/metamask.png'
-import Torus from '~/components/assets/images/wallets/torus.png'
 import Fortmatic from '~/components/assets/images/wallets/fortmatic.png'
 
 const Network = styled.div`
@@ -63,10 +62,6 @@ const networks = [
   {
     value: 'metamask',
     image: Metamask,
-  },
-  {
-    value: 'torus',
-    image: Torus,
   },
   {
     value: 'fortmatic',
