@@ -87,7 +87,7 @@ export default function({ token, balance, props: { expiries, ...props } }) {
       <div className="info">
         <div className="name">{token.replace(/_/gi, '').replace(/-/gi, '')}</div>
         <div className="balance">
-          {balance}
+          {parseFloat(Number(balance).toFixed(2))}
           <span>{expiry} - {moment.unix(expiries.match[expiry]).format('D MMM, YY')}</span>
         </div>
       </div>

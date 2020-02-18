@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import styled from 'styled-components'
 
 import Accordion from '~/components/common/Accordion'
 import Tabs from '~/components/common/Tabs'

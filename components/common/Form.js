@@ -147,6 +147,11 @@ export const Actions = styled.div`
 
     &.secondary {
       min-width: unset;
+
+      &.border {
+        min-width: 147px;
+        border: 1px solid #12265e;
+      }
     }
   }
 `

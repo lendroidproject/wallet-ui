@@ -68,7 +68,7 @@ export default function({ token, balance, allowance, props }) {
         {token}
         {Number(allowance) === 0 && <img className="lock" src={Lock} />}
       </div>
-      <div className="balance">{balance}</div>
+      <div className="balance">{parseFloat(Number(balance).toFixed(2))}</div>
     </Wrapper>
   )
 }

@@ -1,5 +1,25 @@
 import styled from 'styled-components'
 
+export const addCommas = value => {
+  return (value + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,')
+}
+
+export const setPrecision = (value, prec) => {
+  const up = parseInt(value, 10)
+  const down = (
+    '000' + parseInt(value * Math.pow(10, prec), 10).toString()
+  ).substr(-prec)
+  return addCommas(up) + '.' + down
+}
+
+export const getDisplayData = (data, header) => {
+  if (header.render) return header.render(data)
+  let ret = header.key ? data[header.key] : data
+  if (header.access) ret = header.access(ret)
+  if (header.precision) ret = setPrecision(ret, header.precision)
+  return <div>{ret || '-'}</div>
+}
+
 export const TableWrapper = styled.div`
   table {
     width: 100%;
@@ -50,26 +70,6 @@ function Table({
   selection,
   onSelect = () => {},
 }) {
-  const addCommas = value => {
-    return (value + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,')
-  }
-
-  const setPrecision = (value, prec) => {
-    const up = parseInt(value, 10)
-    const down = (
-      '000' + parseInt(value * Math.pow(10, prec), 10).toString()
-    ).substr(-prec)
-    return addCommas(up) + '.' + down
-  }
-
-  const getDisplayData = (data, header) => {
-    if (header.render) return header.render(data)
-    let ret = header.key ? data[header.key] : data
-    if (header.access) ret = header.access(ret)
-    if (header.precision) ret = setPrecision(ret, header.precision)
-    return <div>{ret || '-'}</div>
-  }
-
   return (
     <TableWrapper>
       <table cellPadding="0" cellSpacing="0" border="0">

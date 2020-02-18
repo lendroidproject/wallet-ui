@@ -28,7 +28,7 @@ const Wrapper = styled.div`
 `
 
 export default ({ suggests, onSuggest, ...props }) => {
-  const [focus, setFocus] = useState(true)
+  const [focus, setFocus] = useState(false)
 
   return (
     <Wrapper>

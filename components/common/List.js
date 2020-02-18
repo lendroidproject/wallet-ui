@@ -32,7 +32,7 @@ export default function({
   selectable,
   selection,
   match = 'token',
-  onSelect,
+  onSelect = () => {},
   render,
   itemProps = {},
   relations,

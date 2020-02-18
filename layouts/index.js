@@ -14,9 +14,9 @@ import Lend from '~/components/assets/images/icons/Lend.svg'
 import Underwrite from '~/components/assets/images/icons/Underwrite.svg'
 import Borrow from '~/components/assets/images/icons/Borrow.svg'
 import Operate from '~/components/assets/images/icons/Operate.svg'
-import Auctions from '~/components/assets/images/icons/Auctions.svg'
-import Transfer from '~/components/assets/images/icons/Transfer.svg'
-import TransferIcon from '~/components/assets/images/icons/TransferIcon.svg'
+// import Auctions from '~/components/assets/images/icons/Auctions.svg'
+// import Transfer from '~/components/assets/images/icons/Transfer.svg'
+// import TransferIcon from '~/components/assets/images/icons/TransferIcon.svg'
 import Settings from '~/components/assets/images/icons/Settings.svg'
 import Alert from '~/components/assets/images/icons/Alert.svg'
 import Arrow from '~/components/assets/images/icons/Arrow.svg'
@@ -30,6 +30,7 @@ const shorter = (str, len = 18) => {
 
 const Wrapper = styled.div`
   display: flex;
+  background: #f9f9f9;
 
   * {
     box-sizing: border-box;
@@ -218,6 +219,7 @@ const Content = styled.div`
     max-height: calc(100vh - 60px);
     overflow: auto;
     width: 100%;
+    padding-bottom: 30px;
   }
 `
 
@@ -235,7 +237,14 @@ const wallets = {
   fortmatic: Fortmatic,
 }
 
-export default function({ type, library, address, onProvider, onPanel, ...props }) {
+export default function({
+  type,
+  library,
+  address,
+  onProvider,
+  onPanel,
+  ...props
+}) {
   const router = useRouter()
   const [network, setNetwork] = useState(false)
 

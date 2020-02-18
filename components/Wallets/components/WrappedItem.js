@@ -79,7 +79,7 @@ export default function({ token, balance, props }) {
         </div>
         {token.replace(/_/, '')}
       </div>
-      <div className="balance">{balance}</div>
+      <div className="balance">{parseFloat(Number(balance).toFixed(2))}</div>
     </Wrapper>
   )
 }

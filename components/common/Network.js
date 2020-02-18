@@ -76,6 +76,7 @@ export default ({ active, onSelect, onClose }) => (
       <List>
         {networks.map(({ value, image }) => (
           <div
+            key={value}
             className={`item ${active === value ? 'active' : ''}`}
             onClick={
               active === value
