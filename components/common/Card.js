@@ -18,7 +18,6 @@ export const Header = styled.div`
   backdrop-filter: blur(18px);
   border-radius: 3px 3px 0px 0px;
   position: relative;
-  overflow: hidden;
 
   .bg {
     position: absolute;
@@ -94,4 +93,58 @@ export const Action = styled.div`
 
   background: rgba(93, 195, 169, 0.3);
   border-radius: 10px;
+  position: relative;
+
+  .actions {
+    position: absolute;
+    right: 0;
+    top: 45px;
+    width: 100px;
+    background: white;
+    border: 1px solid #c4c4c4;
+    border-radius: 4px;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: -15px;
+      right: 0;
+
+      border-left: 16px solid transparent;
+      border-right: 16px solid transparent;
+      border-bottom: 26px solid #c4c4c4;
+      z-index: -2;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: -14px;
+      right: 2px;
+
+      border-left: 14px solid transparent;
+      border-right: 14px solid transparent;
+      border-bottom: 22px solid white;
+    }
+
+    .action {
+      padding: 8px 13px;
+      font-size: 14px;
+      color: black;
+      display: flex;
+      align-items: center;
+
+      img {
+        margin-right: 8px;
+      }
+
+      &:not(:last-child) {
+        border-bottom: 1px solid #c4c4c4;
+      }
+
+      &.disabled {
+        opacity: 0.7;
+      }
+    }
+  }
 `

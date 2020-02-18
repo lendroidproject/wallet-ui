@@ -1,7 +1,10 @@
+import { useState } from 'react'
 import styled from 'styled-components'
 import Card, { Header, Content, Footer, Action } from '~/components/common/Card'
 
 import setting from '~/components/assets/images/icons/setting.svg'
+import edit from '~/components/assets/images/icons/edit.svg'
+import trash from '~/components/assets/images/icons/trash.svg'
 import offerTokens from '~/components/assets/images/icons/offer_tokens.svg'
 import withdrawEarnings from '~/components/assets/images/icons/withdraw_earnings.svg'
 
@@ -33,6 +36,7 @@ const PoolName = styled.div`
 `
 
 export default ({ data, onAction, ...props }) => {
+  const [showSetting, setShowSetting] = useState(false)
   const {
     currency,
     totalContributions,
@@ -44,6 +48,11 @@ export default ({ data, onAction, ...props }) => {
     markets: { mfts },
   } = data
 
+  const handleAction = slot => {
+    setShowSetting(false)
+    onAction(slot, data)
+  }
+
   return (
     <Card {...props}>
       <Header>
@@ -53,7 +62,17 @@ export default ({ data, onAction, ...props }) => {
           {data.name}
         </PoolName>
         <Action>
-          <img src={setting} />
+          <img src={setting} onClick={() => setShowSetting(!showSetting)} />
+          {showSetting && (
+            <div className="actions">
+              <div className="action disabled">
+                <img src={edit} /> Edit
+              </div>
+              <div className="action" onClick={() => handleAction('close')}>
+                <img src={trash} /> Delete
+              </div>
+            </div>
+          )}
         </Action>
       </Header>
       <Content>
