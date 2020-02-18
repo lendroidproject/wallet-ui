@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Card, { Header, Content, Footer, Action } from '~/components/common/Card'
 
@@ -53,6 +53,21 @@ export default ({ data, onAction, ...props }) => {
     onAction(slot, data)
   }
 
+  useEffect(() => {
+    const handleClose = e => {
+      if (
+        e.target &&
+        typeof e.target.className === 'string' &&
+        e.target.className.includes('trigger')
+      ) {
+        return
+      }
+      setShowSetting(false)
+    }
+    document.body.addEventListener('click', handleClose)
+    return () => document.body.removeEventListener('click', handleClose)
+  })
+
   return (
     <Card {...props}>
       <Header>
@@ -64,11 +79,11 @@ export default ({ data, onAction, ...props }) => {
         <Action>
           <img src={setting} onClick={() => setShowSetting(!showSetting)} />
           {showSetting && (
-            <div className="actions">
-              <div className="action disabled">
+            <div className="actions trigger">
+              <div className="action disabled trigger">
                 <img src={edit} /> Edit
               </div>
-              <div className="action" onClick={() => handleAction('close')}>
+              <div className="action trigger" onClick={() => handleAction('close')}>
                 <img src={trash} /> Delete
               </div>
             </div>

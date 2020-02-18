@@ -48,6 +48,7 @@ export const Content = styled.div`
   td {
     font-size: 12px;
     color: #949494;
+    word-break: break-all;
 
     &.main {
       font-size: 14px;
