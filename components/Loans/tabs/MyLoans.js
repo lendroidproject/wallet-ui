@@ -20,8 +20,6 @@ const Wrapper = styled.div`
   }
 `
 
-const actions = []
-
 const formFields = {
   repay: defaults => ({
     fields: [

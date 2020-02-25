@@ -89,53 +89,6 @@ const headers = {
   ],
 }
 
-const actions = {
-  tokens: [
-    {
-      label: 'Transfer',
-      slot: 'transfer',
-      visible: ({ balance, allowance }) => Number(balance) && Number(allowance),
-    },
-  ],
-  wrappedTokens: [
-    {
-      label: 'Transfer',
-      slot: 'transfer',
-      visible: ({ balance }) => Number(balance),
-    },
-    {
-      label: 'Contribute',
-      slot: 'contribute',
-      visible: ({ balance }) => Number(balance),
-    },
-  ],
-  sufiTokens: [
-    {
-      label: 'Transfer',
-      slot: 'transfer',
-    },
-    {
-      label: 'Borrow',
-      slot: 'borrow',
-    },
-    {
-      label: 'Exercise',
-      slot: 'excercise',
-      visible: ({ underlying }) => !!underlying,
-    },
-  ],
-  poolshareTokens: [
-    {
-      label: 'Transfer',
-      slot: 'transfer',
-    },
-    {
-      label: 'Withdraw',
-      slot: 'withdraw',
-    },
-  ],
-}
-
 const enumSlots = {
   wrap: 1,
   unwrap: 1,
@@ -548,7 +501,6 @@ export default function({
                     headers={headers[value] || []}
                     data={filter ? data.filter(filter) : data}
                     sort={sort}
-                    // actions={actions[value] || []}
                     onAction={(slot, data) => handleAction(value, slot, data)}
                   />
                 )}

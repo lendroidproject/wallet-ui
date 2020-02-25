@@ -39,7 +39,6 @@ const Footer = styled(Actions)`
 
 function ModalMFT({ riskFree, data, onAction, onClose }) {
   const [form, setForm] = useState({ value: 0 })
-  const [submitting, setSubmitting] = useState(false)
 
   const { type, offered, expiry, utilization } = data
 
