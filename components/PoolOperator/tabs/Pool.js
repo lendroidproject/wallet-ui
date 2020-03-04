@@ -39,6 +39,7 @@ const MFT = styled.span`
   cursor: pointer;
   color: black;
   display: block;
+  white-space: nowrap;
 `
 
 export default ({ data, onAction, onMFTAction, ...props }) => {
@@ -140,8 +141,8 @@ export default ({ data, onAction, onMFTAction, ...props }) => {
                 <span>
                   {lToken.rate.toFixed(2)} {lToken.name.replace(/_/gi, '')}
                 </span>
-                {mfts.map(mft => (
-                  <MFT key={mft.id} onClick={() => onMFTAction(mft)}>
+                {mfts.map((mft, idx) => (
+                  <MFT key={idx} onClick={() => onMFTAction(mft)}>
                     {mft.rate.toFixed(2)} {mft.name.replace(/_/gi, '')}
                   </MFT>
                 ))}

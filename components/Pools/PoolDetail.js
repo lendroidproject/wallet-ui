@@ -258,7 +258,6 @@ export default function({
   const origin = (riskFree ? riskFreePools : riskyPools) || []
   const data = origin.find(({ id: poolId }) => poolId === id)
   if (!data) return <div className="loading">Loading...</div>
-  console.log(supportTokens, data)
 
   return (
     <Accordion>

@@ -20,6 +20,7 @@ const Wrapper = styled.div`
 
     > div {
       margin: 14px;
+      width: 100%;
     }
   }
 

@@ -52,6 +52,7 @@ export default function({ library, data, supportTokens }) {
           .catch(() => {
             if (callback) callback()
           })
+        break
       }
       default:
         console.log(modal, form)
@@ -75,11 +76,9 @@ export default function({ library, data, supportTokens }) {
       }
       case 'withdraw': {
         const { id: positionId } = data
-        library.contracts
-          .onWithdrawCollateral(positionId)
-          .then(() => {
-            library.contracts.getPositions()
-          })
+        library.contracts.onWithdrawCollateral(positionId).then(() => {
+          library.contracts.getPositions()
+        })
         break
       }
       default:

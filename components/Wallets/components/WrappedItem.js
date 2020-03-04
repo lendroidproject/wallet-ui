@@ -12,6 +12,9 @@ const Wrapper = styled.div`
 
   position: relative;
 
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(18px);
+
   &.selected {
     border-color: #d9a547 !important;
   }

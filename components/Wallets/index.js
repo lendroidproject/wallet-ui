@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import styled from 'styled-components'
 import Accordion from '~/components/common/Accordion'
 import List from '~/components/common/List'
 import Table from '~/components/common/Table'
@@ -201,6 +202,19 @@ const formFields = {
   }),
 }
 
+const Tables = styled.div`
+  display: flex;
+  width: 100%;
+  margin: -10px;
+
+  > div {
+    width: 100%;
+    margin: 10px;
+    display: flex;
+    align-items: center;
+  }
+`
+
 export default function({
   type,
   library,
@@ -213,12 +227,12 @@ export default function({
   const { expiries } = library.contracts || {}
   const [modal, setModal] = useState(null)
   const poolShareTokens = [
-    ...riskFreePools.map(({ id, poolShareToken }) => ({
+    riskFreePools.map(({ id, poolShareToken }) => ({
       riskFree: true,
       id,
       ...poolShareToken,
     })),
-    ...riskyPools.map(({ id, poolShareToken }) => ({
+    riskyPools.map(({ id, poolShareToken }) => ({
       riskFree: false,
       id,
       ...poolShareToken,
@@ -280,14 +294,22 @@ export default function({
     {
       value: 'poolshareTokens',
       label: (
-        <>
-          <div className="icon">
-            <img src={HarbourTokens} />
+        <Tables>
+          <div>
+            <div className="icon">
+              <img src={HarbourTokens} />
+            </div>
+            Harbour Tokens
           </div>
-          Poolshare Tokens
-        </>
+          <div>
+            <div className="icon">
+              <img src={HighWaterTokens} />
+            </div>
+            High Water Tokens
+          </div>
+        </Tables>
       ),
-      type: 'Table',
+      type: 'Tables',
     },
   ]
 
@@ -503,6 +525,19 @@ export default function({
                     sort={sort}
                     onAction={(slot, data) => handleAction(value, slot, data)}
                   />
+                )}
+                {type === 'Tables' && (
+                  <Tables>
+                    {[0, 1].map(idx => (
+                      <Table
+                        key={idx}
+                        headers={headers[value] || []}
+                        data={filter ? data[idx].filter(filter) : data[idx]}
+                        sort={sort}
+                        onAction={(slot, data) => handleAction(value, slot, data)}
+                      />
+                    ))}
+                  </Tables>
                 )}
               </div>
             </div>

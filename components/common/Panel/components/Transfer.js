@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import Coin from './Coin'
 import { Wrapper } from './Wrapper'
 
+import check from '~/components/assets/images/icons/check.svg'
+
 export default ({ data, form, setForm }) => {
   const { token: origin, balance } = data
   const token = origin.replace(/(_|-)/g, '')
@@ -44,6 +46,9 @@ export default ({ data, form, setForm }) => {
               onChange={e => setForm({ ...form, to: e.target.value })}
               onBlur={() => onTouch({ ...touch, to: true })}
             />
+            <div className="badge">
+              {!errors.to && touch.to && <img src={check} />}
+            </div>
           </div>
           {errors.to && (
             <div className="info">! Please enter the Valid Address</div>

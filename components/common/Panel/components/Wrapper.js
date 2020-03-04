@@ -6,4 +6,11 @@ export const Wrapper = styled(Form)`
     max-height: 55vh;
     overflow: hidden auto;
   }
+
+  .badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: flex;
+  }
 `
