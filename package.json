@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/lendroidproject/wallet-ui#readme",
   "dependencies": {
-    "@toruslabs/torus-embed": "^0.2.12",
     "dotenv": "^8.2.0",
     "fortmatic": "^1.1.3",
     "lendroid-protocol": "../lendroid-2-js",
