@@ -7,7 +7,7 @@ import { Provider } from 'react-redux'
 import withRedux from 'next-redux-wrapper'
 import configureStore from '~/store'
 
-import { Lendroid } from 'lendroid-protocol'
+import { Lendroid } from 'lendroid-2-js'
 import tokens from '~/assets/contracts.js'
 
 import Layout from '~/layouts'
