@@ -283,7 +283,7 @@ export default function({
           token.includes('F_') ||
           token.includes('U_') ||
           token.includes('I_')) &&
-        balance >= 0,
+        balance > 0,
       sort: ({ token: t1 }, { token: t2 }) =>
         Number(t1.split('_')[2]) - Number(t2.split('_')[2]),
       render: SplittedItem,
