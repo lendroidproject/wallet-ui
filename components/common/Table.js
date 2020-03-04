@@ -36,6 +36,13 @@ export const TableWrapper = styled.div`
       color: #949494;
     }
 
+    tbody tr {
+      cursor: pointer;
+      &.selected {
+        background: #eeeeee;
+      }
+    }
+
     th {
       padding: 7px 16px;
       border-bottom: 1px solid #d8d8d8;
